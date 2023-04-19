@@ -33,6 +33,8 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent }) 
       const answer = await axios.post(`${urlServer}/post/delete`, { id: post.id }, { withCredentials: true });
       console.log(post.id);
       console.log(answer);
+      window.location.reload();
+
       //need alert if succeed or faild
     }
     catch (err) {

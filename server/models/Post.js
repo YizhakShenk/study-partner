@@ -110,7 +110,7 @@ const Post = db.define('post', {
     },
     matched:{
         type:DataTypes.TINYINT,
-        defaultValue:1,
+        defaultValue:-1,
     }
 
 },

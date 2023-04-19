@@ -28,7 +28,7 @@ export default function PostCard({ post }) {
             },
           ],
         }}
-        title={post.matched === -1 ? "this post has been already matched." : ""}
+        title={post.matched === 1 ? "this post has been already matched." : ""}
       >
         <Card
           sx={{
