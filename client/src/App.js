@@ -11,18 +11,22 @@ import CssBaseline from '@mui/material/CssBaseline';
 function App() {
   const [userConnected, setUserConnected] = useState(null);
   const [urlServer] = useState('http://localhost:3005');
-
+  
   useEffect(() => {
     (async () => {
       try {
         // const auth = await (await axios.get('http://localhost:3005/auth/', { withCredentials: true })).data
         const auth = await (await axios.get( `${urlServer}/auth/`, { withCredentials: true })).data
+
         if (!auth) {
           setUserConnected(null);
           sessionStorage.clear()
         }
         else {
-          setUserConnected(auth);
+          // setUserConnected(auth);
+          const jsonUser = sessionStorage.getItem('user')
+          const user =JSON.parse(jsonUser );
+          setUserConnected(user);
         }
       }
       catch (err) {

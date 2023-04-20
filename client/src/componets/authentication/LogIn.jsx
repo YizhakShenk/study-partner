@@ -29,8 +29,11 @@ export default function Login({ handleAuthMode, handleCloseLogIn, handleOpenAler
         sessionStorage.setItem("user", JSON.stringify(answer.data));
         sessionStorage.setItem("user_id", JSON.stringify(answer.data.id));
         setUserConnected(answer.data);
+
         handleOpenAlert('success', 'Welcome! and good luck finding a partner');
-        handleCloseLogIn();
+        setTimeout(() => {
+          handleCloseLogIn();
+        }, 2000);
       }
       catch (err) {
         handleOpenAlert('error', 'Login Faild!');
