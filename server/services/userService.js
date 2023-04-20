@@ -85,6 +85,7 @@ const getOneUser = async (reqBody) => {
                 rate: answer.rate || null,
                 posts: (answer.posts && answer.posts.map((post) => { return convertToReadingPossibility(post) })) || null,
                 subjects: answer.subjects || null,
+                notifications:answer.notifications || null,
             }
         }
         return answer;
@@ -93,6 +94,8 @@ const getOneUser = async (reqBody) => {
         return err;
     }
 }
+
+
 
 const updateUser = async (reqBody) => {
 

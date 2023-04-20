@@ -13,10 +13,9 @@ import {
   Tooltip,
   Button,
   Divider,
-  // Badge,
+  Badge,
 } from "@mui/material";
-// import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-// import NotificationsIcon from '@mui/icons-material/Notifications';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import Logout from "@mui/icons-material/Logout";
 import { useColorScheme } from "@mui/material/styles";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
@@ -24,6 +23,7 @@ import Brightness7Icon from "@mui/icons-material/Brightness7";
 import InfoIcon from "@mui/icons-material/Info";
 import PersonIcon from "@mui/icons-material/Person";
 import { useNavigate } from "react-router-dom";
+
 
 export default function Nav({ setOpenLogIn }) {
   const navigae = useNavigate();
@@ -67,6 +67,23 @@ export default function Nav({ setOpenLogIn }) {
     navigae("/about");
   };
 
+  const handleNotifications = () => {
+    navigae("/notifications");
+  }
+  const countNotificates = () => {
+    let count = 0;
+    if (userConnected.notifications.length < 1) {
+      return null
+    }
+    userConnected.notifications?.forEach(item => {
+      if (item.has_readed !== false) {
+        count++;
+      }
+
+    });
+    return count
+  }
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -78,9 +95,9 @@ export default function Nav({ setOpenLogIn }) {
             {/* Study Partner */}
           </Typography>
 
-          {/* <Badge badgeContent={1} color="error">     //  התראות 
-            <NotificationsIcon onClick={()=>{alert('')}}/>
-          </Badge> */}
+          {userConnected && <Badge badgeContent={countNotificates()} color="error">
+            <NotificationsIcon onClick={handleNotifications} />
+          </Badge>}
 
           <IconButton sx={{ margin: 2 }} onClick={modeToggle} color="inherit">
             {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}

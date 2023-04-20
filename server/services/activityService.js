@@ -1,6 +1,7 @@
 const activityRepo = require('../repositories/activityRepo');
 const userRepo = require('../repositories/userRepo');
 const postRepo = require('../repositories/postRepo');
+const {addNotification} = require('../repositories/notificationRepo')
 const { transferMail } = require('../utilities/mailer/mailer')
 const { testMatched } = require('../utilities/post/postFunctions')
 const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
@@ -23,18 +24,21 @@ const reactToPost = async (req) => {
         if (user.message) {
             throw new Error("user not found");
         }
+        const mainMessage =`someone answer your post request to practice... on ${week[day]}`;
+        const url = `http://localhost:3000/confirm-post?pid=${postId}&aid=${the_applicant_id}&day=${day}`;
         const titleMessage = 'somone wants to practice with you';
         const htmlMessage = `<div>
         <h4>hii ${user.name}! </h4>
-        <p>someone answer your post request to practice... on ${week[day]}</p>
-        <p>please click  <a href=http://localhost:3000/confirm-post?pid=${postId}&aid=${the_applicant_id}&day=${day}> here </a> to confirm.</p>
+        <p>${mainMessage}</p>   
+        <p>please click  <a href=${url}> here </a> to confirm.</p>
         <p>have a nice day !!</p>
         <p>Study partner office</p>
         </div>`;
         const sendEmail = await transferMail(user.email, titleMessage, "", htmlMessage);
         if (sendEmail.message) {
-            throw new Error(sendEmail.message)
+            throw new Error(sendEmail.message,url)
         }
+        await addNotification(user.id,mainMessage,url);
         return "email sent";
     }
     catch (err) {
@@ -68,6 +72,8 @@ const confirmPost = async (req) => {
         if (!applicant) {
             throw new Error('applicant not found.');
         }
+        const mainMessage= `ypur partner ${autherPost.name} confirmed the meeting to study together..`
+        const url = `http://localhost:3000/?aid=${autherPost.name}&day=${day}`
         const transfer = await transferMail(applicant.email, `${autherPost.name}  want to study with you too`,
             `ypur partner ${autherPost.name} confirmed the meeting to study together..
             for mor information you can rich him by his phone number or email below.
@@ -78,6 +84,7 @@ const confirmPost = async (req) => {
         days[day] = 0;
         const matched = testMatched(days)
         await postRepo.updatePost(post.id, { days, matched: matched });
+        await addNotification(applicant.id,mainMessage,url)
         return 'Email sent to the Partner';
     }
     catch (err) {
@@ -106,11 +113,13 @@ const denyPost = async (req) => {
         }
         console.log('applicant.email >> ', applicant.email);
 
+        const mainMessage =`${autherPost.name} cancel the meeting to study together..`
+        const url =`http://localhost:3000/`
         const transfer = await transferMail(applicant.email, `${autherPost.name}  cenceled the meeting`, null,
             `<div>
                  <h4>hii ${applicant.name}!</h4>
-                 <p>ypur part   ner ${autherPost.name} cancel the meeting to study together..
-                 you able to  click  <a href=http://localhost:3000/> here </a>  to search other user's posts.
+                 <p>ypur partner ${autherPost.name} cancel the meeting to study together..
+                 you able to  click  <a href=${url}> here </a>  to search other user's posts.
                  we wish you luck..
                  study partner office
                 </p>
@@ -119,6 +128,7 @@ const denyPost = async (req) => {
             throw new Error(transfer.message)
         }
         await postRepo.updatePost(postId, { mathed: 1 });
+        await addNotification(applicant.id,mainMessage,url);
         return 'Email sent to the applicant';
     }
     catch (err) {
