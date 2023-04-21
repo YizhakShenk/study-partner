@@ -107,6 +107,7 @@ export default function PostCard({ post }) {
             openMore={openMore}
             setOpenMore={setOpenMore}
             post={post}
+            
           />
         </Card>
       </Tooltip>

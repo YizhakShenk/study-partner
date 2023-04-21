@@ -15,9 +15,7 @@ function App() {
   useEffect(() => {
     (async () => {
       try {
-        // const auth = await (await axios.get('http://localhost:3005/auth/', { withCredentials: true })).data
         const auth = await (await axios.get( `${urlServer}/auth/`, { withCredentials: true })).data
-
         if (!auth) {
           setUserConnected(null);
           sessionStorage.clear()

@@ -23,6 +23,17 @@ const getPost = async (req, res) => {
     }
 }
 
+const getNeturePost = async (req, res) => {
+    try {
+        const post = await PostService.getNeturePost(req);
+        res.status(200).send(post);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(404).send(err.message);
+    }
+}
+
 const getPosts = async (req, res) => {
     try {
         const posts = await PostService.getPosts();
@@ -71,6 +82,7 @@ const deletePost = async (req, res) => {
 module.exports = {
     addPost,
     getPost,
+    getNeturePost,
     getPosts,
     updatePost,
     deletePost,
