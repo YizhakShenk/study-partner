@@ -24,7 +24,7 @@ import {
 
 const tempDate = dayjs(new Date().setHours(0, 0, 0, 0));
 
-export default function CreatePost({ open, setOpen }) {
+export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
   const { urlServer } = useContext(UrlContext);
   const { userConnected } = useContext(UserConnected);
 
@@ -36,29 +36,41 @@ export default function CreatePost({ open, setOpen }) {
   const [valueSubCategory, setValueSubCategory] = useState("");
   const [inputCategory, setInputCategory] = useState("");
   const [inputSubCategory, setInputSubCategory] = useState("");
-
   const [dateFrom, setDateFrom] = useState(tempDate);
   const [dateTo, setDateTo] = useState(tempDate);
   const [timeFrom, setTimeFrom] = useState(tempDate);
   const [timeTo, setTimeTo] = useState(tempDate);
-  const [option, setOption] = useState(null);
+  const [option, setOption] = useState([""]);
+  const [optionSub, setOptionSub] = useState([""]);
   const [comment, setComment] = useState("");
   const [days, setDays] = useState([0, 0, 0, 0, 0, 0, 0]);
   const [week] = useState(["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"]);
   const [loading, setLoading] = useState(false);
   const [rendering, setRendering] = useState(true);
 
-
   useEffect(() => {
     (async () => {
       try {
         const result = await axios.get(`${urlServer}/category/get-all`);
         setOption(result.data);
+        if (editPost) {
+          const subArray = result.data?.find((item) => item.name === editPost.category);
+          console.log(subArray);
+          const sub = subArray.subjects?.map((item) => item.name)
+          setOptionSub(sub)
+          setComment(editPost.post)
+          setDateFrom(dayjs(editPost.date_from))
+          setDateTo(dayjs(editPost.date_to))
+          setTimeFrom(dayjs(new Date().setHours(parseInt(editPost.time_from / 100), parseInt(editPost.time_from % 100), 0, 0)))
+          setTimeTo(dayjs(new Date().setHours(parseInt(editPost.time_to / 100), parseInt(editPost.time_to % 100), 0, 0)))
+          setDays(editPost.days)
+        }
       } catch (err) {
         console.log(err);
       }
     })();
   }, [urlServer]);
+
 
   const handleOpenAlert = (alertStatus, message) => {
     setAlertMode(alertStatus);
@@ -82,30 +94,19 @@ export default function CreatePost({ open, setOpen }) {
       }
       const dFrom = dateFrom.$d.getTime();
       const dTo = dateTo.$d.getTime();
-      const tFrom = (timeFrom.$H)*100 +timeFrom.$m;
-      const tTo = (timeTo.$H)*100 +timeTo.$m;
+      const tFrom = (timeFrom.$H) * 100 + timeFrom.$m;
+      const tTo = (timeTo.$H) * 100 + timeTo.$m;
       // //validation   
-      if (dTo < dFrom) {
-        handleOpenAlert("error", "The end date can not be earlier from the start");
-        return;
-      }
-      if (tFrom > tTo) {
-        handleOpenAlert("error", "the time not valid.");
-        return;
-      }
-      if (tFrom === tTo) {
-        handleOpenAlert("error", "please pick correct time");
-        return;
-      }
-      if (daysDistance(dFrom, dTo) > 7) {
-        handleOpenAlert("error", "You can have maximum a week range of date"); return;
-      }
-      if (weekIsEmpty(days)) {
-        handleOpenAlert("error", "Please pick a day or more to study in"); return;
-      }
+      if (dTo < dFrom) { handleOpenAlert("error", "The end date can not be earlier from the start"); return; }
+      if (tFrom > tTo) { handleOpenAlert("error", "the time not valid."); return; }
+      if (tFrom === tTo) { handleOpenAlert("error", "please pick correct time"); return; }
+      if (daysDistance(dFrom, dTo) > 7) { handleOpenAlert("error", "You can have maximum a 7 days range between the days"); return; }
+      if (weekIsEmpty(days)) { handleOpenAlert("error", "Please pick a day or more to study in"); return; }
       setLoading(true);
+
       const post = {
-        userId: userConnected.id || null,
+        id: editPost ? editPost.id : null,
+        userId: editPost ? null : userConnected.id || null,
         auther_name: userConnected.name || null,
         post: comment || null,
         category: inputCategory,
@@ -116,12 +117,17 @@ export default function CreatePost({ open, setOpen }) {
         time_to: tTo,
         days: days || null
       }
-      await axios.post(urlServer + "/post/add", post);
+      console.log(post);
+      if (!editPost) {
+        await axios.post(`${urlServer}/post/add`, post);
+      }
+      else {
+        await axios.put(`${urlServer}/post/update`, post)
+      }
       setLoading(false);
       handleOpenAlert("success", "post published");
       setTimeout(() => {
         window.location.reload();
-        // setOpen(false);
       }, 4000);
 
     } catch (err) {
@@ -130,12 +136,17 @@ export default function CreatePost({ open, setOpen }) {
     }
   };
 
-  const handleAbleDays = (df, dt) => {
-    const distance = daysDistance(df, dt);
-    if (distance < 8){
-      setDays(getOptionalsDays(df.$W, distance));
-    }      
+  const handleAbleDays = (dFrom, dTo) => {
+    const distance = daysDistance(dFrom, dTo);
+    if (distance < 8) {
+      setDays(getOptionalsDays(dFrom.$W, distance));
+    }
+    else{
+      handleOpenAlert("error", "You can have maximum a 7 days range between the days")
+      setDays([-1, -1, -1, -1, -1, -1, -1])
+    }
   }
+
 
   return (
     <div>
@@ -155,22 +166,22 @@ export default function CreatePost({ open, setOpen }) {
           <DialogContent>
             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
               <Autocomplete
+                disabled={editPost !== null}
                 sx={{ width: '47%', m: 1 }}
-                options={option.map((category) => category.name)}
+                options={option?.map((category) => category.name)}
                 onChange={(event, newValue) => {
                   setValueCategory(newValue);
                 }}
                 onInputChange={(event, newInputValue) => {
                   setInputCategory(newInputValue);
                 }}
-
                 renderInput={(params) => (
                   <TextField {...params} label="Category" />
                 )}
               />
               <Autocomplete
                 sx={{ width: '47%', m: 1 }}
-                options={valueCategory ? handleOptionSub() : [""]}
+                options={valueCategory ? handleOptionSub() : optionSub}
                 onChange={(event, newValue) => {
                   setValueSubCategory(newValue);
                 }}
@@ -256,7 +267,7 @@ export default function CreatePost({ open, setOpen }) {
                   fullWidth
                   multiline
                   rows={2}
-                  placeholder="Add a description (optional)"
+                  placeholder="Add a comment (optional)"
                   onChange={(event) => {
                     setComment(event.target.value);
                   }}
@@ -266,8 +277,8 @@ export default function CreatePost({ open, setOpen }) {
           </DialogContent>
           <DialogActions>
             <Box sx={{ marginRight: '2%' }}>
-              <Button onClick={() => setOpen(false)}>Cancel</Button>
-              <Button onClick={handlePost}>Post</Button>
+              <Button onClick={() => { setOpen(false); setEditPost(null) }}>Cancel</Button>
+              <Button onClick={handlePost}>{editPost ? "Edit" : "Post"}</Button>
             </Box>
           </DialogActions>
         </Dialog>

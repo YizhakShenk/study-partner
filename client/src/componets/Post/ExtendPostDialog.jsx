@@ -40,7 +40,7 @@ export default function ExtendPostDialog({ openMore, setOpenMore, post }) {
                         </IconButton>
                     </DialogTitle>
                 </Box>
-                {!isSendingEmail ? <ExtendedPost handleClose={handleClose} post={post} setIsSendingEmail={setIsSendingEmail} setEmailSent={setEmailSent} /> :
+                {!isSendingEmail ? <ExtendedPost handleClose={handleClose} post={post} setIsSendingEmail={setIsSendingEmail} setEmailSent={setEmailSent} setOpenMore={setOpenMore} /> :
                     <PostSending handleClose={handleClose} emailSent={emailSent} />}
             </Dialog>
         </Box>

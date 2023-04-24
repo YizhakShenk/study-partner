@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import CreatePost from "../Post/CreatePost";
 import CreatePostButton from "../Post/CreatePostButton";
 import Posts from "../Post/Posts";
-import { Box, Typography,  } from "@mui/material";
+import PostObjContext from '../../context/PostObjContext'
+import { Box, Typography, } from "@mui/material";
 // import SearchIcon from '@mui/icons-material/Search';
 
 
 export default function Main() {
 
-  const [openPost, setOpenPost] = useState(false);
+  const [openCreatePost, setOpenCreatePost] = useState(false);
+  const [editPost, setEditPost] = useState(null);
 
   return (
     <Box>
@@ -17,10 +19,12 @@ export default function Main() {
         <Typography variant="body1">Find partner to study common interests topics</Typography>
       </Box>
       <Box>
-        <Posts />
+        <PostObjContext.Provider value={{ setEditPost, setOpenCreatePost }}>
+          <Posts />
+        </PostObjContext.Provider>
       </Box>
-      <CreatePostButton setOpenPost={setOpenPost} />
-      {openPost && <CreatePost open={openPost} setOpen={setOpenPost} />}
-    </Box>
+      <CreatePostButton setOpenCreatePost={setOpenCreatePost} />
+      {openCreatePost && <CreatePost open={openCreatePost} setOpen={setOpenCreatePost} editPost={editPost} setEditPost={setEditPost}/>}
+    </Box>  
   );
 }
