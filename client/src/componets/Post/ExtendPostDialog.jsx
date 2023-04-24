@@ -16,7 +16,7 @@ export default function ExtendPostDialog({ openMore, setOpenMore, post }) {
     const handleClose = () => {
         setOpenMore(false);
         setIsSendingEmail(false)
-        emailSent === 1 && window.location.reload()
+        // emailSent === 1 && window.location.reload()
         setEmailSent(0)
     };
 
