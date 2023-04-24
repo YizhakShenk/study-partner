@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import UserConnected from '../../context/UserConnected';
 import ProfileSummary from './ProfileSummary';
@@ -12,22 +12,15 @@ import {
   AccordionDetails,
   Box,
   Typography,
+  Button,
 } from "@mui/material";
-
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 export default function Profie() {
   const navigate = useNavigate()
   const [expanded, setExpanded] = useState("1");
   const { userConnected } = useContext(UserConnected);
-
-  useEffect(() => {
-    if (!userConnected) {
-      console.log('navig');
-      navigate('/');
-    }
-
-  }, [userConnected, navigate]);
-
   
+
   const handleChange = (panel) => {
     if (expanded === panel) {
       setExpanded(" ");
@@ -35,10 +28,9 @@ export default function Profie() {
     }
     setExpanded(panel);
   }
-
   return (
     <Box>
-      {userConnected && <Box>
+      {userConnected ? <Box>
         <Accordion expanded={expanded === '1'} onChange={() => { handleChange('1') }}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -88,6 +80,11 @@ export default function Profie() {
             <ProfilePosts posts={userConnected.posts} />
           </AccordionDetails>
         </Accordion>
+      </Box>
+      :
+      <Box sx={{height:'40vh',mt:'20%'}}>
+        <Typography variant='h5'>Please log in then you can see your profile details !</Typography>
+        <Button endIcon={<ArrowForwardIcon/>} onClick={()=>navigate('/')}>Back to home page</Button>
       </Box>
       }
     </Box>

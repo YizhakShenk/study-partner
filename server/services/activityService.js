@@ -1,3 +1,4 @@
+const CLIENT_URL = process.env.CLIENT_URL
 const activityRepo = require('../repositories/activityRepo');
 const userRepo = require('../repositories/userRepo');
 const postRepo = require('../repositories/postRepo');
@@ -24,8 +25,8 @@ const reactToPost = async (req) => {
         if (user.message) {
             throw new Error("user not found");
         }
-        const mainMessage =`someone answer your post request to practice... on ${week[day]}`;
-        const url = `http://localhost:3000/confirm-post?pid=${postId}&aid=${the_applicant_id}&day=${day}`;
+        const mainMessage =`someone react to your post request to practice ${post.sub_category} on  ${week[day]}.`;
+        const url = `${CLIENT_URL}/confirm-post?pid=${postId}&aid=${the_applicant_id}&day=${day}`;
         const titleMessage = 'somone wants to practice with you';
         const htmlMessage = `<div>
         <h4>hii ${user.name}! </h4>
@@ -73,7 +74,7 @@ const confirmPost = async (req) => {
             throw new Error('applicant not found.');
         }
         const mainMessage= `ypur partner ${autherPost.name} confirmed the meeting to study together..`
-        const url = `http://localhost:3000/?aid=${autherPost.name}&day=${day}`
+        const url = `${CLIENT_URL}/?aid=${autherPost.name}&day=${day}`
         const transfer = await transferMail(applicant.email, `${autherPost.name}  want to study with you too`,
             `ypur partner ${autherPost.name} confirmed the meeting to study together..
             for mor information you can rich him by his phone number or email below.
@@ -114,12 +115,11 @@ const denyPost = async (req) => {
         console.log('applicant.email >> ', applicant.email);
 
         const mainMessage =`${autherPost.name} cancel the meeting to study together..`
-        const url =`http://localhost:3000/`
         const transfer = await transferMail(applicant.email, `${autherPost.name}  cenceled the meeting`, null,
             `<div>
                  <h4>hii ${applicant.name}!</h4>
                  <p>ypur partner ${autherPost.name} cancel the meeting to study together..
-                 you able to  click  <a href=${url}> here </a>  to search other user's posts.
+                 you able to  click  <a href=${CLIENT_URL}> here </a>  to search other user's posts.
                  we wish you luck..
                  study partner office
                 </p>
