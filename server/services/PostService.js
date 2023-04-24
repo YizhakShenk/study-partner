@@ -1,3 +1,4 @@
+const { json } = require('sequelize');
 const PostRepo = require('../repositories/postRepo');
 const { convertToReadingPossibility } = require('../utilities/post/adjustungPostData');
 
@@ -30,10 +31,41 @@ const getPost = async (req) => {
     }
 }
 
+const getNeturePost = async (req) => {
+    try {
+        const { id } = req.body;
+        const result = await PostRepo.getNeturePost(id);
+        if (!result) {
+            throw new Error("fail to get post or post not found ");
+        }
+        return {
+            category: result.category,
+            date_from: result.date_from,
+            date_to: result.date_to,
+            days: JSON.parse(result.days),
+            id: result.id,
+            post: result.post,
+            sub_category: result.sub_category,
+            time_from: result.time_from,
+            time_to: result.time_to,
+        }
+
+
+
+
+    }
+    catch (err) {
+        console.log(err);
+        return err;
+    }
+}
+
+
+
 const getPosts = async () => {
     try {
         const result = await PostRepo.getPosts();
-        if(result.message){
+        if (result.message) {
             throw new Error("fail to get posts or not found any posts");
         }
         answer = result.map((post) => {
@@ -50,12 +82,16 @@ const getPosts = async () => {
 const updatePost = async (reqBody) => {
 
     try {
-        const { id, newPost, newDate, newTime_from, newTime_to } = reqBody;
+        {}
+        const { id, sub_category, post, date_from, date_to, time_from, time_to, days} = reqBody;
         const updatedValues = {
-            post: newPost || undefined,
-            date: newDate || undefined,
-            time_from: newTime_from || undefined,
-            time_to: newTime_to || undefined
+            sub_category: sub_category || undefined,
+            post: post || undefined,
+            date_from: date_from || undefined,
+            date_to: date_to || undefined,
+            time_from: time_from || undefined,
+            time_to: time_to || undefined,
+            days: days || undefined,
         }
         const answer = await PostRepo.updatePost(id, updatedValues);
         return answer;
@@ -67,10 +103,10 @@ const updatePost = async (reqBody) => {
 
 const deletePost = async (req) => {
     const { id } = req.body;
-    console.log('id serv >> ' ,id);
+    console.log('id serv >> ', id);
     try {
         const answer = await PostRepo.deletePost(id);
-        if(answer.message !==undefined){
+        if (answer.message !== undefined) {
             throw new Error(answer.message)
         }
         return answer;
@@ -84,6 +120,7 @@ const deletePost = async (req) => {
 module.exports = PostService = {
     addPost,
     getPost,
+    getNeturePost,
     getPosts,
     updatePost,
     deletePost,

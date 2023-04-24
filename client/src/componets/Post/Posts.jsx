@@ -19,7 +19,6 @@ export default function Posts() {
     setRendering(!rendering);
   };
 
- 
 
   useEffect(() => {
     (async () => {

@@ -1,5 +1,5 @@
 import {createContext} from "react";
 
-const AuthPopupContex= createContext();
+const AuthPopupContext= createContext();
 
 export default AuthPopupContex ;

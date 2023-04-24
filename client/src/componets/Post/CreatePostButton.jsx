@@ -4,7 +4,7 @@ import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
 import Box from "@mui/material/Box";
 
-export default function CreatePostButton({ setOpenPost }) {
+export default function CreatePostButton({ setOpenCreatePost }) {
   const { userConnected } = useContext(UserConnected);
   return (
     <Box>
@@ -14,7 +14,7 @@ export default function CreatePostButton({ setOpenPost }) {
           variant="extended"
           color="primary"
           onClick={() => {
-            setOpenPost(true);
+            setOpenCreatePost(true);
           }}
         >
           <AddIcon />
