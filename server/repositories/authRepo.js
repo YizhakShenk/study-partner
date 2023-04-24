@@ -1,10 +1,10 @@
 
-const { UserModel, PostModel,SubjectModel } = require('../models/Models')
+const { UserModel, PostModel,SubjectModel,NotificationModel } = require('../models/Models')
 
 
 const logIn = async (email) => {
     try {
-        const user = await UserModel.findOne({ where: { email },include:[PostModel,SubjectModel]});
+        const user = await UserModel.findOne({ where: { email },include:[PostModel,SubjectModel,NotificationModel]});
         if (!user) {
             throw new Error('user not found');
         }

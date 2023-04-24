@@ -4,6 +4,7 @@ const { DataTypes } = require('sequelize');
 const SubjectModel = require('./Subject');
 const UserSubjects = require('./UserSubject');
 const PostModel = require('./Post');
+const NotificationModel = require('./Notifications')
 
 const User = db.define('user', {
     id: {
@@ -17,7 +18,7 @@ const User = db.define('user', {
         allowNull: false,
     },
     email: {
-        type: DataTypes.STRING(40),  
+        type: DataTypes.STRING(40),
         allowNull: false,
         unique: true,
 
@@ -44,17 +45,17 @@ const User = db.define('user', {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
-    about:{
-        type:DataTypes.TEXT,
-        allowNull:true
+    about: {
+        type: DataTypes.TEXT,
+        allowNull: true
     },
-    rate:{
-        type:DataTypes.FLOAT,
-        defaultValue:0,
+    rate: {
+        type: DataTypes.FLOAT,
+        defaultValue: 0,
     },
-    num_of_rates:{
-        type:DataTypes.TINYINT,
-        defaultValue:1,
+    num_of_rates: {
+        type: DataTypes.TINYINT,
+        defaultValue: 1,
     },
     refresh_token: {
         type: DataTypes.TEXT,
@@ -77,6 +78,8 @@ User.associations = () => {
 
 User.hasMany(PostModel, { foreignKey: "user_id" });
 PostModel.belongsTo(User, { foreignKey: "user_id" });
+User.hasMany(NotificationModel,{foreignKey:"user_id"});
+NotificationModel.belongsTo(User,{foreignKey:"user_id"});
 User.belongsToMany(SubjectModel, { through: UserSubjects, foreignKey: "UserId" });
 SubjectModel.belongsToMany(User, { through: UserSubjects, foreignKey: "SubjectId" });
 

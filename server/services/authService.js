@@ -38,6 +38,7 @@ const auth = async (req, res) => {
             about: user.about || null,
             posts: (user.posts && user.posts.map((post) => { return convertToReadingPossibility(post) })) || null,
             subjects: user.subjects || null,
+            notifications:user.notifications || null,
         };
     }
     catch (err) {
@@ -83,6 +84,7 @@ const logIn = async (req, res) => {
             about: answer.about || null,
             posts: (answer.posts && answer.posts.map((post) => { return convertToReadingPossibility(post) })) || null,
             subjects: answer.subjects || null,
+            notifications:answer.notifications || null,
         }
     }
     catch (err) {
