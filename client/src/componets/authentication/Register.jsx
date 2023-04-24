@@ -12,7 +12,7 @@ import {
 } from "../../utilities/validetion/validetion.js";
 import { Box, Typography, TextField, Button, } from "@mui/material";
 
-export default function Register({ handleOpenAlert }) {
+export default function Register({ handleOpenAlert,handleAuthMode }) {
   const { urlServer } = useContext(UrlContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -59,6 +59,9 @@ export default function Register({ handleOpenAlert }) {
           age,
         });
         handleOpenAlert('success', 'User created successfully');
+        setTimeout(() => {
+          handleAuthMode(0)
+        }, 2000);
       } catch (err) {
         console.log(err);
         handleOpenAlert('error', 'Register faild');
@@ -67,12 +70,12 @@ export default function Register({ handleOpenAlert }) {
   };
   return (
     <Box sx={{ textAlign: 'center' }}>
-      <Box sx={{}}>
+      <Box >
         <Typography variant="h5" m={2} >
           Sign up
         </Typography>
       </Box>
-      <Box xs={{}} >
+      <Box  >
         <TextField
           sx={{ m: 1 }}
           required
@@ -103,12 +106,13 @@ export default function Register({ handleOpenAlert }) {
           id="password"
           name="password"
           type="password"
-          placeholder="password"
+          placeholder="password(a12345678)"
           label="Password"
           autoComplete="current-password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
         />
+        
         <TextField
           sx={{ m: 1 }}
           required
@@ -120,10 +124,14 @@ export default function Register({ handleOpenAlert }) {
           value={confirmPassword}
           onChange={(event) => setConfirmPassword(event.target.value)}
         />
+        <Box sx={{textAlign: "left" ,ml:6}}>
+      <Typography variant="caption" >
+      {/* The password must contain a minimum of 8 characters that includes numbers and letters */}
+      * required 8 characters that includes numbers and letters
+        </Typography>
+      </Box>
         <TextField
           sx={{ m: 1 }}
-          required
-          id="country"
           label="Country"
           name="country"
           type="text"
@@ -167,12 +175,14 @@ export default function Register({ handleOpenAlert }) {
         />
 
       </Box>
+      
+          
       <Box>
         <Button
           color="success"
           variant="contained"
           type="submit"
-          sx={{ m: 2 }}
+          sx={{ m: 2 ,width:'80%' }}
           onClick={submit}
         >
           Register

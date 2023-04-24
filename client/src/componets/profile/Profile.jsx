@@ -22,7 +22,7 @@ export default function Profie() {
   useEffect(() => {
     if (!userConnected) {
       console.log('navig');
-      navigate('/');
+      // navigate('/');
     }
 
   }, [userConnected, navigate]);
