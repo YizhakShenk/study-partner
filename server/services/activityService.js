@@ -35,14 +35,17 @@ const reactToPost = async (req) => {
     }
     const mainMessage = `someone react to your post request to practice ${post.sub_category} on  ${week[day]}.`;
     const url = `${CLIENT_URL}/confirm-post?pid=${postId}&aid=${the_applicant_id}&day=${day}`;
-    
+
     const titleMessage = "somone wants to practice with you";
-    const htmlMessage = `<div>
-        <h4>hii ${user.name}! </h4>
-        <p>${mainMessage}</p>   
-        <p>please click  <a href=${url}> here </a> to confirm.</p>
-        <p>have a nice day !!</p>
-        <p>Study partner office</p>
+    const htmlMessage = `<div style="background-color: silver; 
+    margin-top: 50px;
+    padding: 50px;
+    text-align:center;">
+        <h4 style="font-size: 21px; color: blue;">hii ${user.name}! </h4>
+        < style="font-size: 17px;" >${mainMessage}<br/>   
+        please click  <a href=${url}> here </a> to confirm.<br/>
+        have a nice day !!<br/>
+        Study partner office</p>
         </div>`;
     const sendEmail = await transferMail(
       user.email,
