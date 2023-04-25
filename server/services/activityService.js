@@ -1,36 +1,43 @@
-
-const CLIENT_URL = process.env.CLIENT_URL
-const activityRepo = require('../repositories/activityRepo');
-const userRepo = require('../repositories/userRepo');
-const postRepo = require('../repositories/postRepo');
-const {addNotification} = require('../repositories/notificationRepo')
-const { transferMail } = require('../utilities/mailer/mailer')
-const { testMatched } = require('../utilities/post/postFunctions')
-const week = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+const CLIENT_URL = process.env.CLIENT_URL;
+const activityRepo = require("../repositories/activityRepo");
+const userRepo = require("../repositories/userRepo");
+const postRepo = require("../repositories/postRepo");
+const { addNotification } = require("../repositories/notificationRepo");
+const { transferMail } = require("../utilities/mailer/mailer");
+const { testMatched } = require("../utilities/post/postFunctions");
+const week = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
 
 const reactToPost = async (req) => {
-    try {
-        const { the_applicant_id, postId, day } = req.body;
-        const post = await postRepo.getPost(postId);
-        if (!post) {
-            throw new Error("post not found");
-        }
-        const days = JSON.parse(post.days);
-        if (days[day] === 0) {
-            throw new Error("The day already taken or not able to study");
-        }
-        const user = await userRepo.getOneUser(null, post.user_id || null);
-        if (!user) {
-            throw new Error("user not found");
-        }
-        if (user.message) {
-            throw new Error("user not found");
-        }
-        const mainMessage =`someone react to your post request to practice ${post.sub_category} on  ${week[day]}.`;
-        const url = `${CLIENT_URL}/confirm-post?pid=${postId}&aid=${the_applicant_id}&day=${day}`;
-        const titleMessage = 'somone wants to practice with you';
-        const htmlMessage = `<div>
-
+  try {
+    const { the_applicant_id, postId, day } = req.body;
+    const post = await postRepo.getPost(postId);
+    if (!post) {
+      throw new Error("post not found");
+    }
+    const days = JSON.parse(post.days);
+    if (days[day] === 0) {
+      throw new Error("The day already taken or not able to study");
+    }
+    const user = await userRepo.getOneUser(null, post.user_id || null);
+    if (!user) {
+      throw new Error("user not found");
+    }
+    if (user.message) {
+      throw new Error("user not found");
+    }
+    const mainMessage = `someone react to your post request to practice ${post.sub_category} on  ${week[day]}.`;
+    const url = `${CLIENT_URL}/confirm-post?pid=${postId}&aid=${the_applicant_id}&day=${day}`;
+    
+    const titleMessage = "somone wants to practice with you";
+    const htmlMessage = `<div>
         <h4>hii ${user.name}! </h4>
         <p>${mainMessage}</p>   
         <p>please click  <a href=${url}> here </a> to confirm.</p>
@@ -55,32 +62,36 @@ const reactToPost = async (req) => {
 };
 
 const confirmPost = async (req) => {
-    try {
-        const { applicantId, postId, day } = req.body;
-        if (applicantId === undefined || postId === undefined || day === undefined) {
-            throw new Error('error with request details.');
-        }
-        if (!day) {
-            throw new Error('day not valid.');
-        }
-        const post = await postRepo.getPost(postId);
-        if (!post) {
-            throw new Error('post not found.');
-        }
-        const days = JSON.parse(post.days);
-        if (days[day] === 0) {
-            throw new Error('day already taken');
-        }
-        const autherPost = await userRepo.getOneUser(null, post.user_id);
-        if (!autherPost) {
-            throw new Error('auther not found.');
-        }
-        const applicant = await userRepo.getOneUser(null, applicantId);
-        if (!applicant) {
-            throw new Error('applicant not found.');
-        }
-        const mainMessage= `ypur partner ${autherPost.name} confirmed the meeting to study together..`
-        const url = `${CLIENT_URL}/?aid=${autherPost.name}&day=${day}`
+  try {
+    const { applicantId, postId, day } = req.body;
+    if (
+      applicantId === undefined ||
+      postId === undefined ||
+      day === undefined
+    ) {
+      throw new Error("error with request details.");
+    }
+    if (!day) {
+      throw new Error("day not valid.");
+    }
+    const post = await postRepo.getPost(postId);
+    if (!post) {
+      throw new Error("post not found.");
+    }
+    const days = JSON.parse(post.days);
+    if (days[day] === 0) {
+      throw new Error("day already taken");
+    }
+    const autherPost = await userRepo.getOneUser(null, post.user_id);
+    if (!autherPost) {
+      throw new Error("auther not found.");
+    }
+    const applicant = await userRepo.getOneUser(null, applicantId);
+    if (!applicant) {
+      throw new Error("applicant not found.");
+    }
+    const mainMessage = `ypur partner ${autherPost.name} confirmed the meeting to study together..`;
+    const url = `${CLIENT_URL}/?aid=${autherPost.name}&day=${day}`;
 
     const transfer = await transferMail(
       applicant.email,
@@ -97,7 +108,6 @@ const confirmPost = async (req) => {
             email address: ${autherPost.email} 
             phone number: ${autherPost.phone_number}</p>
             </div>`
-      
     );
     days[day] = 0;
     const matched = testMatched(days);
@@ -109,7 +119,6 @@ const confirmPost = async (req) => {
     return err;
   }
 };
-
 
 const denyPost = async (req) => {
   try {
@@ -159,7 +168,6 @@ const denyPost = async (req) => {
     return err;
   }
 };
-
 
 const rateUser = async (req) => {
   try {
