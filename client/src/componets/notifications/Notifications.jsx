@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, {  useContext } from 'react'
 import Notification from './Notification';
 import UserConnected from '../../context/UserConnected'
 import { Box, List, Typography } from '@mui/material'

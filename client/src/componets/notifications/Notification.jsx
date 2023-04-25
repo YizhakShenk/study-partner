@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
-import {urlServer} from '../../utilities/Url/url'
 import { Box, ListItem,  ListItemText, Typography, Divider } from '@mui/material'
+const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function Notification({ notification }) {
     const handleClick = async () => {

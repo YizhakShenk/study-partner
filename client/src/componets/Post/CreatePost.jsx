@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import UserConnected from "../../context/UserConnected";
-import UrlContext from "../../context/UrlContext.js";
 import { daysDistance, weekIsEmpty, getOptionalsDays } from '../../utilities/validetion/validateDate';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -21,11 +20,10 @@ import {
   Alert,
   Typography,
 } from "@mui/material/";
-
+const urlServer= process.env.REACT_APP_URL_SERVER
 const tempDate = dayjs(new Date().setHours(0, 0, 0, 0));
 
 export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
-  const { urlServer } = useContext(UrlContext);
   const { userConnected } = useContext(UserConnected);
 
   const [alertMessage, setAlertMessage] = useState('')
@@ -69,7 +67,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         console.log(err);
       }
     })();
-  }, [urlServer]);
+  }, [editPost]);
 
 
   const handleOpenAlert = (alertStatus, message) => {

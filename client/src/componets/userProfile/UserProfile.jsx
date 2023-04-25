@@ -3,7 +3,6 @@ import { useLocation } from 'react-router-dom'
 import axios from 'axios';
 import UserPosts from './UserPosts';
 import UserConnected from '../../context/UserConnected';
-import UrlContext from '../../context/UrlContext';
 import {
   Paper,
   Button,
@@ -15,6 +14,7 @@ import {
   Avatar,
   Divider,
 } from "@mui/material";
+const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function UserProfile() {
   const {
@@ -24,7 +24,6 @@ export default function UserProfile() {
   const [rate, setRate] = useState(null);
   const [isRating, setIsRating] = useState(false);
   const { userConnected } = useContext(UserConnected);
-  const { urlServer } = useContext(UrlContext);
 
   useEffect(() => {
     (async () => {
@@ -40,7 +39,7 @@ export default function UserProfile() {
         console.log(err);
       }
     })()
-  }, [urlServer,userId])
+  }, [userId])
   const handleRate = async (newValue) => {
     console.log('newVal >>', newValue);
     const newRate = await axios.put(urlServer + '/activity/rate-user',

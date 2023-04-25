@@ -1,13 +1,12 @@
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import UserConnected from '../../context/UserConnected';
-import UrlContext from "../../context/UrlContext.js";
 import { Box, Button, InputLabel, MenuItem, FormControl, Typography, Select, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function AddSubject({ setAddSubject }) {
     const { userConnected } = useContext(UserConnected);
-    const { urlServer } = useContext(UrlContext);
     const [cat, setCat] = useState('');
     const [catID, setCatID] = useState("");
     const [subCat, setSubCat] = useState('');
@@ -33,7 +32,7 @@ export default function AddSubject({ setAddSubject }) {
                 console.log(err);
             }
         })()
-    }, [urlServer])
+    }, [])
 
     const handleOpenAlert = (mode, message) => {
         setAlertMode(mode);

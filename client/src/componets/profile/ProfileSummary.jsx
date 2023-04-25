@@ -1,14 +1,12 @@
 import React, { useState, useContext } from 'react';
-import UrlContext from "../../context/UrlContext.js";
-
 import { Box,Button, InputBase} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import axios from 'axios';
 import UserConnected from '../../context/UserConnected';
+const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function ProfileSummary() {
-  const {urlServer} = useContext(UrlContext);
   const { userConnected } = useContext(UserConnected);
   const [val, setVal] = useState(userConnected.about || "");
   const [edited, setEdited] = useState(true);

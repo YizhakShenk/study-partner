@@ -1,5 +1,4 @@
     import React, { useState, useContext } from 'react'
-import UrlContext from "../../context/UrlContext.js";
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import {
@@ -9,11 +8,10 @@ import {
 } from "@mui/material";
 import axios from 'axios';
 import UserConnected from "../../context/UserConnected";
+const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function ProfileDetails() {
-
     const { userConnected} = useContext(UserConnected);
-    const {urlServer} = useContext(UrlContext);
     const [name, setName] = useState(userConnected.name);
     const [email, setEmail] = useState(userConnected.email);
     const [country, setCountry] = useState(userConnected.country);

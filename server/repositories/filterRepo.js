@@ -6,9 +6,8 @@ const filter = async ({ subject, date, time }) => {
         const answer = await PostModel.findAll(
             {
                 where: {
-
                     [Op.and]: [
-                        subject && { sub_category: subject },
+                        subject && { sub_category:subject},
                         date && { date_from: { [Op.lte]: date } },
                         date && { date_to: { [Op.gte]: date } },
                         time && { time_from: { [Op.lte]: time } },

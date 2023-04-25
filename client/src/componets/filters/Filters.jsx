@@ -1,25 +1,21 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import UrlContext from "../../context/UrlContext";
-import { Button, TextField, Autocomplete, Grid , Checkbox,
-    FormControlLabel } from "@mui/material";
+import { Button, TextField, Autocomplete, Grid, Checkbox } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
+import CheckBoxIcon from '@mui/icons-material/CheckBox';
+const urlServer = process.env.REACT_APP_URL_SERVER
 
 export default function Filters({ setPosts }) {
-  const { urlServer } = useContext(UrlContext);
   const [categoriesOptions, setCategoriesOptions] = useState(null);
-  const [subjectName, setSubjectName] = useState(null);
+  const [subjectName, setSubjectName] = useState([]);
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
   const [subjectInput, setSubjectInput] = useState("");
-  const [checked, setChecked] = React.useState(false);
 
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
   useEffect(() => {
     (async () => {
       try {
@@ -39,14 +35,18 @@ export default function Filters({ setPosts }) {
         console.log(err);
       }
     })();
-  }, [urlServer]);
+  }, []);
 
   const filter = async () => {
     try {
       const stempDay = date?.$d.getTime() || null;
       const stempTime = time?.$H * 100 + time?.$m || null;
+      let tempSubName = subjectName;
+      if (!subjectName || subjectName.length < 1) {
+        tempSubName = null;
+      }
       const postsList = await axios.post(`${urlServer}/post/filter`, {
-        subject: subjectName,
+        subject: tempSubName,
         date: stempDay,
         time: stempTime,
       });
@@ -63,7 +63,7 @@ export default function Filters({ setPosts }) {
   };
 
   const clearFilter = () => {
-    setSubjectName(null);
+    setSubjectName([]);
     setDate(null);
     setTime(null);
     setSubjectInput("");
@@ -72,7 +72,7 @@ export default function Filters({ setPosts }) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid
-        maxWidth={{ xs: "100%", sm: "80%", md: "60%" }}
+        maxWidth={{ xs: "100%", sm: "80%", md: "80%", lg: '60%' }}
         container
         columns={{ xs: 4, sm: 12, md: 12 }}
         spacing={1}
@@ -81,23 +81,39 @@ export default function Filters({ setPosts }) {
           <Autocomplete
             size="small"
             sx={{ display: "inline-block", maxWidth: "262px", width: "100%" }}
-            options={
-              categoriesOptions
-                ? categoriesOptions.sort((a, b) =>
-                    a.category.localeCompare(b.category)
-                  )
-                : []
-            }
+            multiple
+            options={categoriesOptions
+              ? categoriesOptions.sort((a, b) =>
+                a.category.localeCompare(b.category)
+              )
+              : []}
+            disableCloseOnSelect
             getOptionLabel={(option) => option.name}
             groupBy={(option) => option.category}
             inputValue={subjectInput}
+            renderOption={(props, option, { selected }) => (
+              <li {...props}>
+                <Checkbox
+                  icon={<CheckBoxIcon />}
+                  checkedIcon={<CheckBoxOutlineBlankIcon />}
+                  checked={!selected}
+                />
+                {option.name}
+              </li>
+            )}
             onChange={(event, newValue) => {
-              newValue && setSubjectName(newValue.name);
+              if (newValue.length < 4) {
+                const tempSub = newValue.map(item => item.name)
+                newValue && setSubjectName(tempSub);
+              }
             }}
             onInputChange={(event, newInputValue) => {
+              console.log(newInputValue);
               setSubjectInput(newInputValue ? newInputValue : "");
             }}
-            renderInput={(params) => <TextField {...params} label="Category" />}
+            renderInput={(params) => (
+              <TextField {...params} label="Category" />
+            )}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
@@ -124,18 +140,18 @@ export default function Filters({ setPosts }) {
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Button sx={{ mr:1, mb:5}} variant="outlined" onClick={filter}>
+          <Button sx={{ mr: 1, mb: 5 }} variant="outlined" onClick={filter}>
             Filter
           </Button>
-          <Button sx={{mb:5}} variant="outlined" onClick={clearFilter}>
+          <Button sx={{ mb: 5 }} variant="outlined" onClick={clearFilter}>
             Clear
           </Button>
-            {/* <FormControlLabel 
+          {/* <FormControlLabel 
                 sx={{display:'inline'}}
               label="unavailable posts"
               control={<Checkbox checked={checked} onChange={handleChange} />}
             /> */}
-            {/* <Button sx={{mb:5}}><Checkbox checked={checked} onChange={handleChange}/></Button> */}
+          {/* <Button sx={{mb:5}}><Checkbox checked={checked} onChange={handleChange}/></Button> */}
         </Grid>
       </Grid>
     </LocalizationProvider>

@@ -1,11 +1,10 @@
 import axios from "axios";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { passwordValid } from '../../utilities/validetion/validetion.js';
-import UrlContext from "../../context/UrlContext.js";
 import { Box, Typography, TextField, Button } from '@mui/material';
 
 export default function ResetPassword({ handleAuthMode, handleOpenAlert }) {
-  const { urlServer } = useContext(UrlContext);
+  const urlServer= process.env.REACT_APP_URL_SERVER
   const [code, setCode] = useState('');
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")

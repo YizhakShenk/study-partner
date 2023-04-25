@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import PostCard from "./PostCard";
-import UrlContext from "../../context/UrlContext";
 import Filters from "../filters/Filters";
 import {
   Box,
@@ -10,10 +9,10 @@ import {
   Typography,
 
 } from "@mui/material";
+const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function Posts() {
   const [posts, setPosts] = useState(null);
-  const { urlServer } = useContext(UrlContext);
   const [rendering, setRendering] = useState(false);
   const handleRendering = () => {
     setRendering(!rendering);
@@ -26,10 +25,6 @@ export default function Posts() {
         const postsList = await (
           await axios.get(`${urlServer}/post/get-all`)
         ).data;
-        // for (let index = 0; index < postsList.length; index++) {
-        //   if (!postsList.data.matched === 0) {
-        //   }
-        // }
 
         if (!postsList) {
           throw new Error("posts not dound");
@@ -40,7 +35,7 @@ export default function Posts() {
         console.log(err);
       }
     })();
-  }, [urlServer, rendering]);
+  }, [ rendering]);
 
   return (
     <Box alignItems="center">
