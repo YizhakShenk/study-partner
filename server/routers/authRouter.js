@@ -3,7 +3,7 @@ const {logIn,auth,forgetPassword,resetPassword} = require('../controllers/authCo
 
 
 
-authRouter.get('/',auth);       
+authRouter.post('/',auth);       
 authRouter.post('/log-in',logIn);
 authRouter.post('/forget-pass',forgetPassword);
 authRouter.post('/reset-pass',resetPassword);

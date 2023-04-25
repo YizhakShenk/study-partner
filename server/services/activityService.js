@@ -33,30 +33,29 @@ const reactToPost = async (req) => {
     if (user.message) {
       throw new Error("user not found");
     }
-    const mainMessage = `someone react to your post request to practice ${post.sub_category} on  ${week[day]}.`;
+    const title = "somone wants to practice with you";
+    const message = `someone react to your post request to practice ${post.sub_category} on  ${week[day]}.`;
     const url = `${CLIENT_URL}/confirm-post?pid=${postId}&aid=${the_applicant_id}&day=${day}`;
-
-    const titleMessage = "somone wants to practice with you";
     const htmlMessage = `<div style="background-color: silver; 
     margin-top: 50px;
     padding: 50px;
     text-align:center;">
         <h4 style="font-size: 21px; color: blue;">hii ${user.name}! </h4>
-        < style="font-size: 17px;" >${mainMessage}<br/>   
+        <p style="font-size: 17px;" >${message}<br/>   
         please click  <a href=${url}> here </a> to confirm.<br/>
         have a nice day !!<br/>
         Study partner office</p>
         </div>`;
     const sendEmail = await transferMail(
       user.email,
-      titleMessage,
+      title,
       "",
       htmlMessage
     );
     if (sendEmail.message) {
       throw new Error(sendEmail.message, url);
     }
-    await addNotification(user.id, mainMessage, url);
+    await addNotification(user.id, title, message, url);
     return "email sent";
   } catch (err) {
     console.log(err);
@@ -93,29 +92,27 @@ const confirmPost = async (req) => {
     if (!applicant) {
       throw new Error("applicant not found.");
     }
-    const mainMessage = `ypur partner ${autherPost.name} confirmed the meeting to study together..`;
-    const url = `${CLIENT_URL}/?aid=${autherPost.name}&day=${day}`;
-
-    const transfer = await transferMail(
-      applicant.email,
-      `${autherPost.name}  want to study with you too`,
-      null,
-      `<div style="background-color: silver; 
-      margin-top: 50px;
-      padding: 50px;
-      text-align:center;">
-      <h4 style="font-size: 21px; color: blue;" >hii ${applicant.name} </h4>
-      <p style="font-size: 17px;"> ypur partner ${autherPost.name} confirmed the meeting to study together<br/>
-            for mor information you can rich him by his phone number or email below.<br/> have fun.<br/>
-            study partner office.<br/>
-            email address: ${autherPost.email} 
-            phone number: ${autherPost.phone_number}</p>
-            </div>`
-    );
+    const titleMessage = `${autherPost.name}  want to study with you too`;
+    const notificationMessage = `ypur partner ${autherPost.name} confirmed the meeting to study together..\n
+    for more information you can rich him by his phone number or email below \n
+    email address: ${autherPost.email}
+    phone number: ${autherPost.phone_number}`;
+    const htmlMessage = `<div style="background-color: silver; 
+    margin-top: 50px;
+    padding: 50px;
+    text-align:center;">
+    <h4 style="font-size: 21px; color: blue;" >hii ${applicant.name} </h4>
+    <p style="font-size: 17px;"> ypur partner ${autherPost.name} confirmed the meeting to study together<br/>
+          for more information you can rich him by his phone number or email below.<br/> have fun.<br/>
+          study partner office.<br/>
+          email address: ${autherPost.email} 
+          phone number: ${autherPost.phone_number}</p>
+          </div>`
+    const transfer = await transferMail(applicant.email, titleMessage, null, htmlMessage);
     days[day] = 0;
     const matched = testMatched(days);
     await postRepo.updatePost(post.id, { days, matched: matched });
-    await addNotification(applicant.id, mainMessage, url);
+    await addNotification(applicant.id, titleMessage, notificationMessage, null);
     return "Email sent to the Partner";
   } catch (err) {
     console.log(err);
@@ -141,30 +138,27 @@ const denyPost = async (req) => {
     if (!applicant) {
       throw new Error("applicant not found.");
     }
-    console.log("applicant.email >> ", applicant.email);
+    const titleMessage = `${autherPost.name} cancel the meeting to study together`
+    const notificationMessage = `${autherPost.name} cancel the meeting to study together.\n
+    you can try find other partner posts in home page.`;
+    const htmlMessage = `<div style=" 
+    background-color: silver; 
+    margin-top: 50px;
+    padding: 50px;
+    text-align:center;">
+        <h4 style="font-size: 21px; color: blue;" >hii ${applicant.name} </h4>
+        <p style="font-size: 17px;">ypur partner ${autherPost.name} cancel the meeting to study together<br />
+            you able to click <a href=${CLIENT_URL}> here </a> to search other user's posts.<br />
+            we wish you luck<br />
+            study partner office</p>
+    </div>`
 
-    const mainMessage = `${autherPost.name} cancel the meeting to study together..`;
-    const transfer = await transferMail(
-      applicant.email,
-      `${autherPost.name}  cenceled the meeting`,
-      null,
-      `<div style=" 
-            background-color: silver; 
-            margin-top: 50px;
-            padding: 50px;
-            text-align:center;">
-                <h4 style="font-size: 21px; color: blue;" >hii ${applicant.name} </h4>
-                <p style="font-size: 17px;">ypur partner ${autherPost.name} cancel the meeting to study together<br />
-                    you able to click <a href=${CLIENT_URL}> here </a> to search other user's posts.<br />
-                    we wish you luck<br />
-                    study partner office</p>
-            </div>`
-    );
+    const transfer = await transferMail(applicant.email, titleMessage, null, htmlMessage);
     if (transfer.message) {
       throw new Error(transfer.message);
     }
     await postRepo.updatePost(postId, { mathed: 1 });
-    await addNotification(applicant.id, mainMessage, url);
+    await addNotification(applicant.id, titleMessage, notificationMessage, null);
     return "Email sent to the applicant";
   } catch (err) {
     console.log(err);

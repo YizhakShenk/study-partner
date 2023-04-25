@@ -3,9 +3,8 @@ const notificationRepo = require('../repositories/notificationRepo');
 const addNotification = async (reqBody) => {
 
     try {
-        const { user_id, message ,url } = reqBody;
-        const answer = await notificationRepo.addNotification(user_id, message,url);
-
+        const { user_id,title, message ,url } = reqBody;
+        const answer = await notificationRepo.addNotification(user_id,title, message,url);
         return answer;
     }
     catch (err) {
@@ -15,11 +14,9 @@ const addNotification = async (reqBody) => {
 }
 
 const updateNotification = async (req) => {
-    console.log('serv////////////////////////////////////');
     try {
         const { id,has_readed } = req.body;
         const answer = await notificationRepo.updateNotification(id,has_readed);
-
         return answer;
     }
     catch (err) {

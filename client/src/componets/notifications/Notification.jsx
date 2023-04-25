@@ -1,28 +1,70 @@
 
 import React from 'react'
 import axios from 'axios'
-import { Box, ListItem,  ListItemText, Typography, Divider, ListItemButton } from '@mui/material'
-const urlServer= process.env.REACT_APP_URL_SERVER
+import {
+  Box,
+  Typography,
+  Divider,
+  Accordion, AccordionSummary, AccordionDetails
+} from '@mui/material'
 
-export default function Notification({ notification }) {
-  const handleClick = async () => {
-    await axios.put(`${urlServer}/notification/update`, {
-      id: notification.id,
-      has_readed: true,
-    });
-    window.open(notification.url);
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+const urlServer = process.env.REACT_APP_URL_SERVER
+
+export default function Notification({ notification, expanded, handleChangePanel, panel }) {
+  
+  const handleOpen = async () => {
+    handleChangePanel(panel)
+    if (!notification.has_readed) {
+      await axios.put(`${urlServer}/notification/update`, {
+        id: notification.id,
+        has_readed: true,
+      });
+    }
   };
+  const handleClick = () => {
+    if (notification.url) {
+      window.open(notification.url);
+    }
+    return;
+  }
   return (
-
-    <Box sx={{backgroundColor : notification.has_readed ? 'white': 'AliceBlue'}} onClick={handleClick}>
-      <ListItem disablePadding>
-        <ListItemButton>
-          <ListItemText sx={{ textAlign: "center" }}>
-            <Typography>{notification.message}</Typography>
-          </ListItemText>
-        </ListItemButton>
-      </ListItem>
-      <Divider />
+    <Box  >
+      {notification && <Accordion expanded={expanded === panel} onChange={handleOpen}>
+        <AccordionSummary
+        sx={{ backgroundColor: notification.has_readed ? 'white' : 'AliceBlue' }}
+          expandIcon={<ExpandMoreIcon />}
+        >
+          <Typography>{notification.title}</Typography>
+        </AccordionSummary>
+          <Divider/>
+        <AccordionDetails>
+          <Box onClick={handleClick}>
+            <Typography >
+              {notification.message}
+            </Typography></Box>
+        </AccordionDetails>
+      </Accordion>}
     </Box>
   );
 }
+
+
+
+// <Box sx={{backgroundColor : notification.has_readed ? 'white': 'AliceBlue'}} onClick={handleClick}>
+    //   <ListItem disablePadding>
+    //     <ListItemButton>
+    //       <ListItemText sx={{ textAlign: "center" }}>
+    //         <Typography>{notification.message}</Typography>
+    //       </ListItemText>
+    //     </ListItemButton>
+    //   </ListItem>
+    //   <Divider />
+    // </Box>
+
+
+
+
+
+
+
