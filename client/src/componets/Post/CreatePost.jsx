@@ -126,7 +126,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
       handleOpenAlert("success", "post published");
       setTimeout(() => {
         window.location.reload();
-      }, 4000);
+      }, 1000);
 
     } catch (err) {
       handleOpenAlert("error", "post faild");

@@ -19,6 +19,16 @@ export default function Profie() {
   const navigate = useNavigate()
   const [expanded, setExpanded] = useState("1");
   const { userConnected } = useContext(UserConnected);
+
+  useEffect(() => {
+    if (!userConnected) {
+      console.log('navig');
+      // navigate('/');
+    }
+
+  }, [userConnected, navigate]);
+
+
   
 
   const handleChange = (panel) => {

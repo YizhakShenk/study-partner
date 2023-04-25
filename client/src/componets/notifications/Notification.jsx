@@ -10,7 +10,7 @@ export default function Notification({ notification }) {
     }
     return (
         <Box onClick={handleClick}>
-            <ListItem>
+            <ListItem disablePadding>
                 <ListItemText sx={{ textAlign: 'center' }}>
                     <Typography >
                         {notification.message}
