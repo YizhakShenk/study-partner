@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, TextField, Autocomplete, Grid, Checkbox } from "@mui/material";
+import { Button, TextField, Autocomplete, Grid, Checkbox,FormControlLabel } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
@@ -69,6 +69,9 @@ export default function Filters({ setPosts }) {
     setSubjectInput("");
   };
 
+  const handleViewOnlyAvailable = ()=>{
+    
+  }
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid
@@ -146,6 +149,11 @@ export default function Filters({ setPosts }) {
           <Button sx={{ mb: 5 }} variant="outlined" onClick={clearFilter}>
             Clear
           </Button>
+          
+          <FormControlLabel control={<Checkbox  />} label="Available Posts only" />
+          {/* <Button size="small" endIcon={<Checkbox  size="small"/>}>available Posts only</Button> */}
+          
+          {/* <Button></Button> */}
           {/* <FormControlLabel 
                 sx={{display:'inline'}}
               label="unavailable posts"
