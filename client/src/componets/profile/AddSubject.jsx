@@ -1,16 +1,21 @@
 import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import UserConnected from '../../context/UserConnected';
-import UrlContext from "../../context/UrlContext.js";
-import { Box, Button, InputLabel, MenuItem, FormControl, Typography, Select } from '@mui/material';
+import { Box, Button, InputLabel, MenuItem, FormControl, Typography, Select, Alert } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function AddSubject({ setAddSubject }) {
     const { userConnected } = useContext(UserConnected);
-    const { urlServer } = useContext(UrlContext);
     const [cat, setCat] = useState('');
+    const [catID, setCatID] = useState("");
     const [subCat, setSubCat] = useState('');
-    const [subjectId, setSubjectId] = useState();
+    const [subjectId, setSubjectId] = useState("");
+
+    const [alertMessage, setAlertMessage] = useState('')
+    const [alertOpen, setAlertOpen] = useState(false);
+    const [alertMode, setAlertMode] = useState('')
+
 
     useEffect(() => {
         (async () => {
@@ -27,11 +32,22 @@ export default function AddSubject({ setAddSubject }) {
                 console.log(err);
             }
         })()
-    }, [urlServer])
+    }, [])
 
+    const handleOpenAlert = (mode, message) => {
+        setAlertMode(mode);
+        setAlertMessage(message)
+        setAlertOpen(true);
+        setTimeout(() => {
+            setAlertOpen(false);
+            setAddSubject(false);
+        }, 3500)
+
+    }
     const handleChangeCat = (event) => {
         const { target: { value } } = event
-        const sub = cat.filter((item) => item.id === value.id);
+        setCatID(value);
+        const sub = cat.filter((item) => item.id === value);
         setSubCat(sub[0].subjects)
     };
 
@@ -42,15 +58,17 @@ export default function AddSubject({ setAddSubject }) {
     const handleSave = async () => {
         try {
             await axios.post(`${urlServer}/user-subject/add`, { userId: userConnected.id, subjectId });
+            handleOpenAlert('success', "Subject added successfull");
         }
         catch (err) {
             console.log(err);
+            handleOpenAlert('error', "Error to add subject please try again later");
         }
-        setAddSubject(addSubject => !addSubject);
     }
 
     return (
         <Box>
+            {alertOpen && <Alert severity={alertMode} >{alertMessage}</Alert>}
             {cat ? <Box sx={{ m: 2 }}>
                 <Typography sx={{ m: 1 }} variant='h6' color="primary">Please select Subject to add</Typography>
                 <FormControl sx={{ m: 1, minWidth: 180 }}>
@@ -58,10 +76,10 @@ export default function AddSubject({ setAddSubject }) {
                     <Select
                         label="Category"
                         onChange={handleChangeCat}
-                        value={''}
+                        value={catID}
                     >
                         {cat && cat.map((item, index) => {
-                            return <MenuItem key={index} value={{ id: item.id, name: item.name }}>{item.name}</MenuItem>
+                            return <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
                         })}
                     </Select>
                 </FormControl>
@@ -71,7 +89,7 @@ export default function AddSubject({ setAddSubject }) {
                         disabled={!subCat ? true : false}
                         label="Sub Category"
                         onChange={handleChangeSub}
-                        value={''}
+                        value={subjectId}
                     >
                         {subCat && subCat.map((item, index) => {
                             return <MenuItem key={index} value={item.id}>{item.name}</MenuItem>

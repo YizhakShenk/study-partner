@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import UrlContext from "../../context/UrlContext.js";
 import UserConnected from "../../context/UserConnected.js";
 import {
     Box,
@@ -12,6 +11,7 @@ import {
     Paper,
 } from "@mui/material/";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function ConfirmPost({  setOpenLogIn }) {
     const [paramseS] = useSearchParams();
@@ -19,7 +19,6 @@ export default function ConfirmPost({  setOpenLogIn }) {
     const the_applicant_id = paramseS.get('aid');
     const day = paramseS.get('day');
     const { userConnected } = useContext(UserConnected);
-    const { urlServer } = useContext(UrlContext);
     const [applicant, setApplicant] = useState();
     const [progressTrans, setProgressTrans] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
@@ -44,7 +43,7 @@ export default function ConfirmPost({  setOpenLogIn }) {
                 console.log(err);
             }
         })()
-    }, [the_applicant_id, urlServer,day,postid])
+    }, [the_applicant_id,day,postid])
 
     const handleOpenAlert = (alertStatus, message) => {
         setAlertMode(alertStatus);

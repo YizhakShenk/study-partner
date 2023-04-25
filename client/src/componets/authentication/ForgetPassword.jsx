@@ -1,12 +1,11 @@
 import axios from "axios";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { emailValid } from '../../utilities/validetion/validetion.js';
 import { Box, TextField, Button, Typography } from '@mui/material';
-import UrlContext from "../../context/UrlContext.js";
 
 export default function ForgetPassword({ handleAuthMode,handleOpenAlert }) {
   const [email, setEmail] = useState('');
-  const { urlServer } = useContext(UrlContext);
+  const urlServer= process.env.REACT_APP_URL_SERVER
   const submit = async () => {
     if (!email || !emailValid(email)) {
       handleOpenAlert('error','please add an valid email');

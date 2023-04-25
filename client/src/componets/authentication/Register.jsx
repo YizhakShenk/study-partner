@@ -1,6 +1,5 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import UrlContext from "../../context/UrlContext.js";
 import {
   nameValid,
   emailValid,
@@ -13,7 +12,8 @@ import {
 import { Box, Typography, TextField, Button, } from "@mui/material";
 
 export default function Register({ handleOpenAlert,handleAuthMode }) {
-  const { urlServer } = useContext(UrlContext);
+  const urlServer= process.env.REACT_APP_URL_SERVER
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

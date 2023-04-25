@@ -3,13 +3,12 @@ import React, { useState, useContext } from "react";
 import UserConnected from "../../context/UserConnected";
 import { emailValid, passwordValid } from "../../utilities/validetion/validetion.js";
 import { Box, Typography, TextField, Button, Link } from "@mui/material";
-import UrlContext from "../../context/UrlContext.js";
 
 export default function Login({ handleAuthMode, handleCloseLogIn, handleOpenAlert }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const { setUserConnected } = useContext(UserConnected);
-  const { urlServer } = useContext(UrlContext);
+  const urlServer= process.env.REACT_APP_URL_SERVER
 
   const submit = async () => {
     if (!email || !password) {
