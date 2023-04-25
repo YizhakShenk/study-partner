@@ -1,5 +1,4 @@
 import React, { useState, useContext } from 'react';
-import UrlContext from "../../context/UrlContext.js";
 import axios from 'axios';
 import AddSubject from './AddSubject';
 import UserConnected from '../../context/UserConnected';
@@ -8,10 +7,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+const urlServer= process.env.REACT_APP_URL_SERVER
 
 
 export default function ProfileSubjects() {
-    const { urlServer } = useContext(UrlContext);
+   
     const { userConnected, setUserConnected } = useContext(UserConnected);
     const [subjects, setSubjects] = useState(userConnected.subjects || null);
     const [subjectsToRemove,setSubjectsToRemove] = useState([])

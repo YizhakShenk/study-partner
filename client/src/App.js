@@ -1,16 +1,15 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import UserConnected from './context/UserConnected';
-import UrlContext from './context/UrlContext';
 import Home from './componets/home/Home';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import axios from 'axios';
 import CssBaseline from '@mui/material/CssBaseline';
 // import theme from './style/theme';
+const urlServer= process.env.REACT_APP_URL_SERVER
 
 function App() {
   const [userConnected, setUserConnected] = useState(null);
-  const [urlServer] = useState('http://localhost:3005');
   
   useEffect(() => {
     (async () => {
@@ -31,7 +30,7 @@ function App() {
         console.log(err.message);
       }
     })()
-  }, [urlServer]);
+  }, []);
 
   // useEffect(() => {
   //   if (userConnected) {
@@ -44,11 +43,9 @@ function App() {
       <CssVarsProvider>
         <CssBaseline>
           {/* <ThemeProvider theme={theme}> */}
-          <UrlContext.Provider value={{ urlServer: urlServer }}>
             <UserConnected.Provider value={{ userConnected, setUserConnected }}>
               <Home />
             </UserConnected.Provider>
-          </UrlContext.Provider>
           {/* </ThemeProvider> */}
         </CssBaseline>
       </CssVarsProvider>

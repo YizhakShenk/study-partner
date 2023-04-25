@@ -4,8 +4,6 @@ import CreatePostButton from "../Post/CreatePostButton";
 import Posts from "../Post/Posts";
 import PostObjContext from '../../context/PostObjContext'
 import { Box, Typography, } from "@mui/material";
-// import SearchIcon from '@mui/icons-material/Search';
-
 
 export default function Main() {
 

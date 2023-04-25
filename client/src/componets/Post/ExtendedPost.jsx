@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserConnected from "../../context/UserConnected";
-import UrlContext from "../../context/UrlContext.js";
 import PostObjContext from "../../context/PostObjContext";
 import {
   Paper,
@@ -18,10 +17,9 @@ import {
 } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+const urlServer = process.env.REACT_APP_URL_SERVER
 
-export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent,setOpenMore }) {
-
-  const { urlServer } = useContext(UrlContext);
+export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, setOpenMore }) {
   const { userConnected } = useContext(UserConnected);
   const { setEditPost, setOpenCreatePost } = useContext(PostObjContext)
   const navigae = useNavigate();
@@ -33,7 +31,7 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent,set
   const handleEdit = async () => {
     try {
       const postNature = await (
-        await axios.post(`${urlServer}/post/get-nature`,{id:post.id}) 
+        await axios.post(`${urlServer}/post/get-nature`, { id: post.id })
       ).data;
       if (!postNature) {
         throw new Error("posts not dound");
@@ -50,7 +48,7 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent,set
 
   const handleDeletePost = async () => {
     try {
-      const answer = await axios.post(`${urlServer}/post/delete`, { id: post.id }, { withCredentials: true });
+      await axios.post(`${urlServer}/post/delete`, { id: post.id }, { withCredentials: true });
       window.location.reload();
       //need alert if succeed or faild
     }
@@ -141,7 +139,7 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent,set
                   <Typography variant="body2">Are you sure you want to delete this post?</Typography>
                   <Box >
                     <Button size="small" color="error" onClick={handleDeletePost}>Delete</Button>
-                    <Button size="small" onClick={() => { setOpenAnchorEl(false); setAnchorEl(null);}}>Cancel</Button>
+                    <Button size="small" onClick={() => { setOpenAnchorEl(false); setAnchorEl(null); }}>Cancel</Button>
                   </Box>
                 </Paper>
               </Popover>
