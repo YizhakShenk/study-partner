@@ -223,7 +223,6 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
                     value={timeFrom}
                     onChange={(newValue) => {
                       newValue && setTimeFrom(newValue);
-                      console.log(newValue);
                     }}
                     ampm={false}
                     renderInput={(params) => <TextField {...params} />}
