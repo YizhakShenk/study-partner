@@ -1,25 +1,39 @@
-import React, {  useContext } from 'react'
-import Notification from './Notification';
-import UserConnected from '../../context/UserConnected'
-import { Box, List, Typography } from '@mui/material'
-
-
+import React, { useContext } from "react";
+import Notification from "./Notification";
+import UserConnected from "../../context/UserConnected";
+import { Box, List, Typography, Paper, Button } from "@mui/material";
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { useNavigate } from "react-router-dom";
 export default function Notifications() {
+  const { userConnected } = useContext(UserConnected);
+  const navigate = useNavigate()
 
-    const { userConnected } = useContext(UserConnected);
-
-    return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', m:1}}>
-            {userConnected ? <List sx={{ width: '60%', height: '100vh', backgroundColor: 'AliceBlue' }}>
-                {userConnected && userConnected.notifications?.map((notification, index) => {
-                    return <Notification notification={notification} key={index} />
-                })}
-            </List> :
-                <Box>
-                    <Typography>
-                        Please Log In
-                    </Typography>
-                </Box>}
-        </Box>
-    )
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        m: 1,
+      }}
+    >
+      {userConnected ? (
+        <List
+          sx={{ width: "60%", height: "100vh", backgroundColor: "AliceBlue" }}
+        >
+          <Paper elevation={3}>
+            {userConnected &&
+              userConnected.notifications?.map((notification, index) => {
+                return <Notification notification={notification} key={index} />;
+              })}
+          </Paper>
+        </List>
+      ) : (
+        <Box sx={{height:'40vh',mt:'20%'}}>
+        <Typography variant='h5'>Please log in then you can see your notifications !</Typography>
+        <Button endIcon={<ArrowForwardIcon/>} onClick={()=>navigate('/')}>Back to home page</Button>
+      </Box>
+      )}
+    </Box>
+  );
 }

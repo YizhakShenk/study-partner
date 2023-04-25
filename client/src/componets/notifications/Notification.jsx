@@ -13,9 +13,8 @@ export default function Notification({ notification }) {
     window.open(notification.url);
   };
   return (
-    // variant={day !== index ? "outlined" : "contained"}
 
-    <Box sx={{backgroundColor : notification.has_readed ? 'AliceBlue': 'white'}} onClick={handleClick}>
+    <Box sx={{backgroundColor : notification.has_readed ? 'white': 'AliceBlue'}} onClick={handleClick}>
       <ListItem disablePadding>
         <ListItemButton>
           <ListItemText sx={{ textAlign: "center" }}>
