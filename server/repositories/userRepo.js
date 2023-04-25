@@ -34,7 +34,7 @@ const getOneUser = async (email, id) => {
         }
 
         else if (id) {
-            answer = await UserModel.findOne({ where: { id }, include: [PostModel, SubjectModel, NotificationModel] });
+            answer = await UserModel.findOne({ where: { id }, include: [PostModel, SubjectModel, NotificationModel ]});
         }
         if (!answer) {
             throw new Error('user not found');

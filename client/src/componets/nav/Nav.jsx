@@ -76,7 +76,7 @@ export default function Nav({ setOpenLogIn }) {
       return null
     }
     userConnected.notifications?.forEach(item => {
-      if (item.has_readed !== false) {
+      if (item.has_readed === false) {
         count++;
       }
 
