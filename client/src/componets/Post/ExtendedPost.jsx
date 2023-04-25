@@ -77,7 +77,6 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, se
       if (!answer.data) {
         throw new Error('fail to send email');
       }
-      console.log(answer.data);
       setEmailSent(1);
     } catch (err) {
       console.log(err);

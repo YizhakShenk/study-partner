@@ -16,6 +16,10 @@ const Notification = db.define('notification', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    title: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     message: {
         type: DataTypes.STRING,
         allowNull: false

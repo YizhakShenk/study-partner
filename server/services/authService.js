@@ -6,10 +6,14 @@ const UserRepo = require('../repositories/userRepo');
 const { emailValid, passwordValid } = require('../utilities/validations/validations');
 const { cookieParse } = require('../utilities/cookieParse/cookieParse')
 const { transferMail } = require('../utilities/mailer/mailer');
-const {convertToReadingPossibility} =require('../utilities/post/adjustungPostData')
+const { convertToReadingPossibility } = require('../utilities/post/adjustungPostData')
 
-const auth = async (req, res) => {
+const auth = async (req) => {
     try {
+        const { id } = req.body
+        if (!id) {
+            return false;
+        }
         console.log(req.headers.cookie);
         const cookie = req.headers.cookie || null
         if (!cookie || cookie === undefined) {
@@ -21,10 +25,9 @@ const auth = async (req, res) => {
         }
         const isVarify = jwt.verify(obj.token, process.env.SECRET_KEY);
         if (isVarify.email) {
-            console.log(true);
         }
-        const user = await  UserRepo.getOneUser(null,obj.id);
-        if(!user){
+        const user = await UserRepo.getOneUser(null, id);
+        if (!user) {
             return true
         }
         return {
@@ -38,7 +41,7 @@ const auth = async (req, res) => {
             about: user.about || null,
             posts: (user.posts && user.posts.map((post) => { return convertToReadingPossibility(post) })) || null,
             subjects: user.subjects || null,
-            notifications:user.notifications || null,
+            notifications: user.notifications || null,
         };
     }
     catch (err) {
@@ -84,7 +87,7 @@ const logIn = async (req, res) => {
             about: answer.about || null,
             posts: (answer.posts && answer.posts.map((post) => { return convertToReadingPossibility(post) })) || null,
             subjects: answer.subjects || null,
-            notifications:answer.notifications || null,
+            notifications: answer.notifications || null,
         }
     }
     catch (err) {
@@ -108,19 +111,19 @@ const forgetPassword = async (reqBody) => {
             throw Error('email not macth please try again');
         }
         const newPass = Math.random().toString(36).slice(2, 8);
-        const emailDestination =user.email;
-        const titleMessage ='temporary code from study partner'; 
-        const bodyMessage =`<div>
+        const emailDestination = user.email;
+        const titleMessage = 'temporary code from study partner';
+        const bodyMessage = `<div>
         <h4>hii ${user.name} </h4>
         <p>your temporary password is: ${newPass}  please do not share this password to anybody.. 
         have a nice day !!</p>
         </div>`;
         // const bodyMessage =`your temporary password is: ${newPass}  please do not share this password to anybody`
-        const updatePassword= await UserRepo.updateUser(email,null, { refresh_token: newPass });
-        if(updatePassword.message ){
+        const updatePassword = await UserRepo.updateUser(email, null, { refresh_token: newPass });
+        if (updatePassword.message) {
             throw Error('Faild to Update password');
         }
-        const sendMail = await transferMail(emailDestination,titleMessage,'',bodyMessage);   
+        const sendMail = await transferMail(emailDestination, titleMessage, '', bodyMessage);
         return sendMail
 
     }
@@ -147,7 +150,7 @@ const resetPassword = async (reqBody) => {
         }
         const hashPssword = bcrypt.hashSync(password, BCRYPT_ROUNDS);
         const answer = await AuthRepo.resetPassword(code, hashPssword);
-        if(answer.message){
+        if (answer.message) {
             throw new Error(answer.message);
         }
         return answer;

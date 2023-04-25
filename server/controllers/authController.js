@@ -21,7 +21,7 @@ const logIn = async (req, res) => {
 
 const auth = async (req, res) => {
     try {
-        const answer = await AuthService.auth(req, res);
+        const answer = await AuthService.auth(req);
         if (answer.message) {
             throw new Error(answer.message);
         }

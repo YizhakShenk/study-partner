@@ -9,12 +9,14 @@ import CssBaseline from '@mui/material/CssBaseline';
 const urlServer= process.env.REACT_APP_URL_SERVER
 
 function App() {
+   
   const [userConnected, setUserConnected] = useState(null);
   
   useEffect(() => {
     (async () => {
       try {
-        const auth = await (await axios.get( `${urlServer}/auth/`, { withCredentials: true })).data
+        const id = sessionStorage.getItem("user_id");
+        const auth = await (await axios.post( `${urlServer}/auth/`,{id}, { withCredentials: true })).data
         if (!auth) {
           setUserConnected(null);
           sessionStorage.clear()
@@ -23,7 +25,7 @@ function App() {
           // setUserConnected(auth);
           const jsonUser = sessionStorage.getItem('user')
           const user =JSON.parse(jsonUser );
-          setUserConnected(user);
+          setUserConnected(auth);
         }
       }
       catch (err) {

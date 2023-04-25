@@ -9,6 +9,7 @@ import MarkEmailReadOutlinedIcon from "@mui/icons-material/MarkEmailReadOutlined
 import ErrorOutlinedIcon from "@mui/icons-material/ErrorOutlined";
 
 export default function PostSending({ emailSent }) {
+  
   return (
     <Box>
       <DialogContent>
