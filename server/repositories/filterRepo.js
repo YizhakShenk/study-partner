@@ -1,7 +1,10 @@
 const { Op } = require('sequelize');
 const PostModel = require('../models/Post');
 
-const filter = async ({ subject, date, time }) => {
+const filter = async ({ subject, date, time,matched }) => {
+    console.log('///////////////////////////////////////');
+    console.log(matched);
+    console.log('///////////////////////////////////////');
     try {
         const answer = await PostModel.findAll(
             {
@@ -12,6 +15,7 @@ const filter = async ({ subject, date, time }) => {
                         date && { date_to: { [Op.gte]: date } },
                         time && { time_from: { [Op.lte]: time } },
                         time && { time_to: { [Op.gte]: time } },
+                        matched && {matched: -1},
                     ]
                 },
                 order:["matched","date_from"]

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Button, TextField, Autocomplete, Grid, Checkbox } from "@mui/material";
+import { Box, Button, TextField, Autocomplete, Grid, Checkbox, FormControlLabel } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
@@ -15,6 +15,7 @@ export default function Filters({ setPosts }) {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
   const [subjectInput, setSubjectInput] = useState("");
+  const [matched, setMatched] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -37,7 +38,7 @@ export default function Filters({ setPosts }) {
     })();
   }, []);
 
-  const filter = async () => {
+  const filter = async (tempMatched) => {
     try {
       const stempDay = date?.$d.getTime() || null;
       const stempTime = time?.$H * 100 + time?.$m || null;
@@ -49,6 +50,7 @@ export default function Filters({ setPosts }) {
         subject: tempSubName,
         date: stempDay,
         time: stempTime,
+        matched: tempMatched,
       });
       if (!postsList) {
         throw new Error("posts not dound");
@@ -69,6 +71,10 @@ export default function Filters({ setPosts }) {
     setSubjectInput("");
   };
 
+  const handleViewOnlyAvailable = () => {
+    filter(!matched)
+    setMatched(matched => !matched);
+  }
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid
@@ -140,18 +146,15 @@ export default function Filters({ setPosts }) {
           />
         </Grid>
         <Grid item xs={12} sm={6} md={3}>
-          <Button sx={{ mr: 1, mb: 5 }} variant="outlined" onClick={filter}>
-            Filter
-          </Button>
-          <Button sx={{ mb: 5 }} variant="outlined" onClick={clearFilter}>
-            Clear
-          </Button>
-          {/* <FormControlLabel 
-                sx={{display:'inline'}}
-              label="unavailable posts"
-              control={<Checkbox checked={checked} onChange={handleChange} />}
-            /> */}
-          {/* <Button sx={{mb:5}}><Checkbox checked={checked} onChange={handleChange}/></Button> */}
+          <Box>
+            <Button sx={{ mr: 1, mb: 5 }} variant="outlined" onClick={() => filter(matched)}>
+              Filter
+            </Button>
+            <Button sx={{ mb: 5 }} variant="outlined" onClick={clearFilter}>
+              Clear
+            </Button>
+          </Box>
+          <FormControlLabel color="gray" control={<Checkbox size="" checked={matched} onChange={handleViewOnlyAvailable} />} label="Available Posts only" />
         </Grid>
       </Grid>
     </LocalizationProvider>

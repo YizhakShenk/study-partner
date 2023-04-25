@@ -20,7 +20,6 @@ export default function Profie() {
   const [expanded, setExpanded] = useState("1");
   const { userConnected } = useContext(UserConnected);
 
-  
 
 
   
