@@ -15,7 +15,7 @@ export default function Filters({ setPosts }) {
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
   const [subjectInput, setSubjectInput] = useState("");
-  const [matched, setMatched] = useState(false);
+  const [matched, setMatched] = useState(false);  
 
   useEffect(() => {
     (async () => {
@@ -71,10 +71,6 @@ export default function Filters({ setPosts }) {
     setSubjectInput("");
   };
 
-  const handleViewOnlyAvailable = () => {
-    filter(!matched)
-    setMatched(matched => !matched);
-  }
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Grid
@@ -154,7 +150,6 @@ export default function Filters({ setPosts }) {
               Clear
             </Button>
           </Box>
-          <FormControlLabel color="gray" control={<Checkbox size="" checked={matched} onChange={handleViewOnlyAvailable} />} label="Available Posts only" />
         </Grid>
       </Grid>
     </LocalizationProvider>
