@@ -7,7 +7,6 @@ import Auth from '../authentication/Auth';
 import Main from '../main/Main';
 import UserProfile from '../userProfile/UserProfile';
 import ConfirmPost from '../confirmPost/ConfirmPost';
-import Notifications from '../notifications/Notifications';
 import { Box } from '@mui/material'
 
 
@@ -28,7 +27,6 @@ export default function Home() {
                     <Route path='/profile' element={<Profie />} />
                     <Route path='/user' element={<UserProfile />} />
                     <Route path='/confirm-post' element={<ConfirmPost setOpenLogIn={setOpenLogIn} />} />
-                    <Route path='notifications' element={<Notifications/>} />
                 </Routes>
                 {openLogIn && <Auth handleCloseLogIn={handleCloseLogIn} openLogIn={openLogIn} />}
             </BrowserRouter>
