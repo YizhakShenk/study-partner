@@ -8,8 +8,10 @@ import Auth from '../authentication/Auth';
 import Main from '../main/Main';
 import UserProfile from '../userProfile/UserProfile';
 import ConfirmPost from '../confirmPost/ConfirmPost';
+
 import Notifications from '../notifications/Notifications';
 import CreatePost from '../Post/CreatePost';
+
 import { Box } from '@mui/material'
 
 
@@ -25,6 +27,7 @@ export default function Home() {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
+
                 <PostObjContext.Provider value={{ setEditPost, setOpenCreatePost }}>
                     <BrowserRouter>
                         <Nav setOpenLogIn={setOpenLogIn} />
@@ -40,6 +43,7 @@ export default function Home() {
                     </BrowserRouter>
                         {openCreatePost && <CreatePost open={openCreatePost} setOpen={setOpenCreatePost} editPost={editPost} setEditPost={setEditPost}/>}
                 </PostObjContext.Provider>
+
         </Box>
     );
 }
