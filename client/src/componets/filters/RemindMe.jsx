@@ -5,14 +5,14 @@ import { Box, Button, Typography, Card, CardContent, CardMedia, CardActions, Ico
 import AddIcon from '@mui/icons-material/Add';
 const urlServer = process.env.REACT_APP_URL_SERVER
 
-export default function RemindMe({ date, time, subName }) {
+export default function RemindMe({ subName, date, time }) {
     const { userConnected } = useContext(UserConnected)
     const [sstempSubName, setStempSsubName] = useState();
     const [sstempDay, setSstempDay] = useState();
     const [sstempTime, setSstempTime] = useState();
 
     useEffect(() => {
-        if(subName){
+        if (subName) {
             setStempSsubName(subName.toString());
         }
         if (date) {
@@ -21,7 +21,7 @@ export default function RemindMe({ date, time, subName }) {
         if (time) {
             setSstempTime(`${time.$H < 10 ? "0" : ""}${time.$H}:${time.$m < 10 ? "0" : ""}${time.$m}`);
         }
-    }, [subName,date, time])
+    }, [subName, date, time])
 
     const remindMe = async () => {
         try {
@@ -29,7 +29,10 @@ export default function RemindMe({ date, time, subName }) {
                 alert("you are not logged in please log in to complete");
                 return;
             }
-            axios.post(`${urlServer}/alert/add-alert`, { email: userConnected.email, sub_category: sstempSubName, date: sstempDay, time: sstempTime })
+            console.log(sstempDay);
+            console.log(sstempTime);
+            const answer = await axios.post(`${urlServer}/alert/add-alert`, { email: userConnected.email || null, sub_category: sstempSubName || null, date: sstempDay || null, time: sstempTime || null })
+            console.log(answer);
         }
         catch (err) {
             console.log(err);

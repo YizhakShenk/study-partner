@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 // import RemindMe from "./RemindMe";
 import RemindMe from "./RemindMe";
-import { Box, Button, TextField, Autocomplete, Grid, Checkbox, FormControlLabel } from "@mui/material";
+import { Box, Button, TextField, Autocomplete, Grid, Checkbox } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TimePicker } from "@mui/x-date-pickers/TimePicker";
@@ -44,6 +44,7 @@ export default function Filters({ setPosts }) {
   const getSubName = (subjectName) => { return !subjectName || subjectName.length < 1 ? null : subjectName }
   const getDateStemp = (date) => { return date?.$d.getTime() || null; }
   const getTimeStemp = (time) => { return time?.$H * 100 + time?.$m || null; }
+  
   const filter = async (tempMatched) => {
     try {
       setRemindMe(false)
