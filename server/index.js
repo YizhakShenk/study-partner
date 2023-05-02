@@ -22,8 +22,8 @@ cron.schedule("0 00 * * *",removeOldPosts);
 app.listen(process.env.PORT, () => {
     (async () => {
         await db.sync();
-        console.log(await fillCategoryTable());
-        console.log(await fillSubjectTable());
+        await fillCategoryTable();
+        await fillSubjectTable();
         // console.log(await fillUserAndPostst());/// for testing
         
     })()

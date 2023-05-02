@@ -15,10 +15,10 @@ const fillCategoryTable = async () => {
     console.log(typeof num);
 
     try {
-        await Models.CategoryModel.findOrCreate({ where: { id: mathID, name: "math" } });
-        await Models.CategoryModel.findOrCreate({ where: { id: lnaguageID, name: "languages" } });
-        await Models.CategoryModel.findOrCreate({ where: { id: softwareID, name: "software" } });
-        await Models.CategoryModel.findOrCreate({ where: { id: philosophyID, name: "philosophy" } });
+        await Models.CategoryModel.findOrCreate({ where: { id: mathID, name: "Math" } });
+        await Models.CategoryModel.findOrCreate({ where: { id: lnaguageID, name: "Languages" } });
+        await Models.CategoryModel.findOrCreate({ where: { id: softwareID, name: "Software" } });
+        await Models.CategoryModel.findOrCreate({ where: { id: philosophyID, name: "Philosophy" } });
         return 'successful';
     }
     catch (err) {

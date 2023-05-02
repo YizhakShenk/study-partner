@@ -23,8 +23,8 @@ function App() {
         }
         else {
           // setUserConnected(auth);
-          const jsonUser = sessionStorage.getItem('user')
-          const user =JSON.parse(jsonUser );
+          // const jsonUser = sessionStorage.getItem('user')
+          // const user =JSON.parse(jsonUser );
           setUserConnected(auth);
         }
       }
