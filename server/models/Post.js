@@ -27,7 +27,8 @@ const Post = db.define('post', {
     },
     post: {
         type: DataTypes.TEXT,
-        allowNull: true
+        defaultValue:"",
+        allowNull: false
     },
     date_from:{
         type: DataTypes.BIGINT,

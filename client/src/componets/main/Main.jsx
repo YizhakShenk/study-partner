@@ -1,14 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import CreatePost from "../Post/CreatePost";
 import CreatePostButton from "../Post/CreatePostButton";
 import Posts from "../Post/Posts";
-import PostObjContext from '../../context/PostObjContext'
 import { Box, Typography, } from "@mui/material";
 
-export default function Main() {
-
-  const [openCreatePost, setOpenCreatePost] = useState(false);
-  const [editPost, setEditPost] = useState(null);
+export default function Main({openCreatePost,setOpenCreatePost,editPost,setEditPost}) { 
 
   return (
     <Box>
@@ -17,11 +13,10 @@ export default function Main() {
         <Typography variant="body1">Find partner to study common interests topics</Typography>
       </Box>
       <Box>
-        <PostObjContext.Provider value={{ setEditPost, setOpenCreatePost }}>
           <Posts />
-        </PostObjContext.Provider>
       </Box>
       <CreatePostButton setOpenCreatePost={setOpenCreatePost} />
+
       {openCreatePost && <CreatePost open={openCreatePost} setOpen={setOpenCreatePost} editPost={editPost} setEditPost={setEditPost}/>}
     </Box>  
   );
