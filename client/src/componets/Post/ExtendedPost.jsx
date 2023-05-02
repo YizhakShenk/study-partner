@@ -30,15 +30,15 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, se
 
   const handleEdit = async () => {
     try {
+      setOpenMore(false);
       const postNature = await (
         await axios.post(`${urlServer}/post/get-nature`, { id: post.id })
       ).data;
       if (!postNature) {
         throw new Error("posts not dound");
       }
-
-      setOpenMore(false);
       setEditPost(postNature);
+      // setOpenDialog(true);
       setOpenCreatePost(true);
     }
     catch (err) {

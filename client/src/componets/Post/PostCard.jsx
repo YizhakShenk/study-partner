@@ -13,6 +13,7 @@ import CalendarTodayTwoToneIcon from '@mui/icons-material/CalendarTodayTwoTone';
 export default function PostCard({ post }) {
   const [openMore, setOpenMore] = useState(false);
   const [week] = useState(["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"]);
+
   return (
     <Box>
       <Tooltip
@@ -107,6 +108,8 @@ export default function PostCard({ post }) {
             openMore={openMore}
             setOpenMore={setOpenMore}
             post={post}
+            // setEditPost={setEditPost}
+            
             
           />
         </Card>

@@ -20,7 +20,7 @@ import {
   Alert,
   Typography,
 } from "@mui/material/";
-const urlServer= process.env.REACT_APP_URL_SERVER
+const urlServer = process.env.REACT_APP_URL_SERVER
 const tempDate = dayjs(new Date().setHours(0, 0, 0, 0));
 
 export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
@@ -53,7 +53,6 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         setOption(result.data);
         if (editPost) {
           const subArray = result.data?.find((item) => item.name === editPost.category);
-          console.log(subArray);
           const sub = subArray.subjects?.map((item) => item.name)
           setOptionSub(sub)
           setComment(editPost.post)
@@ -139,7 +138,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
     if (distance < 8) {
       setDays(getOptionalsDays(dFrom.$W, distance));
     }
-    else{
+    else {
       handleOpenAlert("error", "You can have maximum a 7 days range between the days")
       setDays([-1, -1, -1, -1, -1, -1, -1])
     }
@@ -150,134 +149,139 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
     <div>
       {option ? (
         <Dialog open={open} onClose={() => setOpen(false)}>
-          {loading && <Box sx={{ position: 'relative' }}>
-            <Box sx={{ backgroundColor: 'gray', display: 'flex', position: 'absolute', width: '100%', height: '536px', opacity: '0.5', alignItems: 'center', justifyContent: 'center' }}>
-              <CircularProgress />
-            </Box>
-          </Box>}
-          <Box m={1} >
-            <DialogTitle >
-              {opanAlert ? <Box mb={4} sx={{ position: 'relative', width: '100%' }}><Alert onClose={() => setOpanAlert(false)} sx={{ position: 'absolute', width: '100%' }} severity={alertMode}>{alertMessage}</Alert></Box> : <Typography variant="body4">{"Post"}</Typography>}
-            </DialogTitle>
+          <Box>
+            {loading && <Box sx={{ position: 'relative' }}>
+              <Box sx={{ backgroundColor: 'gray', display: 'flex', position: 'absolute', width: '100%', height: '536px', opacity: '0.5', alignItems: 'center', justifyContent: 'center' }}>
+                <CircularProgress />
+              </Box>
+            </Box>}
+            <Box m={1} >
+              <DialogTitle >
+                {opanAlert ? <Box mb={4} sx={{ position: 'relative', width: '100%' }}><Alert onClose={() => setOpanAlert(false)} sx={{ position: 'absolute', width: '100%' }} severity={alertMode}>{alertMessage}</Alert></Box> : <Typography variant="body4">{"Post"}</Typography>}
+              </DialogTitle>
 
-          </Box>
-          <DialogContent>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-              <Autocomplete
-                disabled={editPost !== null}
-                sx={{ width: '47%', m: 1 }}
-                options={option?.map((category) => category.name)}
-                onChange={(event, newValue) => {
-                  setValueCategory(newValue);
-                }}
-                onInputChange={(event, newInputValue) => {
-                  setInputCategory(newInputValue);
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Category" />
-                )}
-              />
-              <Autocomplete
-                sx={{ width: '47%', m: 1 }}
-                options={valueCategory ? handleOptionSub() : optionSub}
-                onChange={(event, newValue) => {
-                  setValueSubCategory(newValue);
-                }}
-                onInputChange={(event, newInputValue) => {
-                  setInputSubCategory(newInputValue);
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Sub Category" />
-                )}
-              />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <Box sx={{ width: '47%', m: 1 }}>
-                  <DatePicker
-                    label="From day"
-                    disablePast
-                    value={dateFrom}
-                    inputFormat="DD/MM/YYYY"
-                    renderInput={(params) => <TextField {...params} />}
-                    onChange={(newValue) => {
-                      newValue && setDateFrom(newValue);
-                      handleAbleDays(newValue, dateTo)
-                    }}
-                  />
-                </Box>
-                <Box sx={{ width: '47%', m: 1 }}>
-                  <DatePicker
-                    label="To day"
-                    disablePast
-                    value={dateTo}
-                    inputFormat="DD/MM/YYYY"
-                    renderInput={(params) => <TextField {...params} />}
-                    onChange={(newValue) => {
-                      newValue && setDateTo(newValue);
-                      handleAbleDays(dateFrom, newValue)
-                    }}
-                  />
-                </Box>
-                <Box sx={{ width: '47%', m: 1 }}>
-                  <TimePicker
-                    label="From Time"
-                    value={timeFrom}
-                    onChange={(newValue) => {
-                      newValue && setTimeFrom(newValue);
-                    }}
-                    ampm={false}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </Box>
-                <Box sx={{ width: '47%', m: 1 }}>
-                  <TimePicker
-                    label="To time"
-                    value={timeTo}
-                    onChange={(newValue) => {
-                      newValue && setTimeTo(newValue);
-                    }}
-                    ampm={false}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </Box>
-              </LocalizationProvider>
-              <Box sx={{ width: '100%', m: 1 }}>
-                {week?.map((item, index) => {
-                  return <Button
-                    disabled={days[index] < 0}
-                    key={index}
-                    variant={days[index] !== 0 ? "contained" : "outlined"}
-                    size="small"
-                    sx={{ m: 0.4, width: '13%', }}
-                    onClick={() => {
-                      let temp = days;
-                      temp[index] = 0 + 1 - temp[index]
-                      setRendering(!rendering) //dont delete. it needed to render component
-                      setDays(temp);
-                    }}
-                  >
-                    {item}</Button>
-                })}
-              </Box>
-              <Box sx={{ width: '100%', m: 1 }}>
-                <TextField
-                  value={comment}
-                  fullWidth
-                  multiline
-                  rows={2}
-                  placeholder="Add a comment (optional)"
-                  onChange={(event) => {
-                    setComment(event.target.value);
+            </Box>
+            <DialogContent>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                <Autocomplete
+                  disabled={editPost !== null}
+                  sx={{ width: '47%', m: 1 }}
+                  options={option ? option?.map((category) => category.name) : [""]}
+                  onChange={(event, newValue) => {
+                    setValueCategory(newValue);
                   }}
-                ></TextField>
+                  onInputChange={(event, newInputValue) => {
+                    setInputCategory(newInputValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label={editPost !== null ? editPost.category : "Category"} />
+                  )}
+                />
+                <Autocomplete
+                  sx={{ width: '47%', m: 1 }}
+                  options={valueCategory ? handleOptionSub() : optionSub}
+                  // defaultValue={editPost?editPost.sub_category:""}
+                  // defaultValue={editPost?editPost.sub_category:""}
+                  onChange={(event, newValue) => {
+                    setValueSubCategory(newValue);
+                  }}
+                  onInputChange={(event, newInputValue) => {
+                    setInputSubCategory(newInputValue);
+                  }}
+                  renderInput={(params) => (
+                    // <TextField {...params} label="Sub Category" />
+                    <TextField {...params} label={editPost ? editPost.sub_category : "Sub Category"} />
+                  )}
+                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Box sx={{ width: '47%', m: 1 }}>
+                    <DatePicker
+                      label="From day"
+                      // disablePast
+                      value={dateFrom}
+                      inputFormat="DD/MM/YYYY"
+                      renderInput={(params) => <TextField {...params} />}
+                      onChange={(newValue) => {
+                        newValue && setDateFrom(newValue);
+                        handleAbleDays(newValue, dateTo)
+                      }}
+                    />
+                  </Box>
+                  <Box sx={{ width: '47%', m: 1 }}>
+                    <DatePicker
+                      label="To day"
+                      disablePast
+                      value={dateTo}
+                      inputFormat="DD/MM/YYYY"
+                      renderInput={(params) => <TextField {...params} />}
+                      onChange={(newValue) => {
+                        newValue && setDateTo(newValue);
+                        handleAbleDays(dateFrom, newValue)
+                      }}
+                    />
+                  </Box>
+                  <Box sx={{ width: '47%', m: 1 }}>
+                    <TimePicker
+                      label="From Time"
+                      value={timeFrom}
+                      onChange={(newValue) => {
+                        newValue && setTimeFrom(newValue);
+                      }}
+                      ampm={false}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </Box>
+                  <Box sx={{ width: '47%', m: 1 }}>
+                    <TimePicker
+                      label="To time"
+                      value={timeTo}
+                      onChange={(newValue) => {
+                        newValue && setTimeTo(newValue);
+                      }}
+                      ampm={false}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </Box>
+                </LocalizationProvider>
+                <Box sx={{ width: '100%', m: 1 }}>
+                  {week?.map((item, index) => {
+                    return <Button
+                      disabled={days[index] < 0}
+                      key={index}
+                      variant={days[index] !== 0 ? "contained" : "outlined"}
+                      size="small"
+                      sx={{ m: 0.4, width: '13%', }}
+                      onClick={() => {
+                        let temp = days;
+                        temp[index] = 0 + 1 - temp[index]
+                        setRendering(!rendering) //dont delete. it needed to render component
+                        setDays(temp);
+                      }}
+                    >
+                      {item}</Button>
+                  })}
+                </Box>
+                <Box sx={{ width: '100%', m: 1 }}>
+                  <TextField
+                    value={comment}
+                    fullWidth
+                    multiline
+                    rows={2}
+                    placeholder="Add a comment (optional)"
+                    onChange={(event) => {
+                      setComment(event.target.value);
+                    }}
+                  ></TextField>
+                </Box>
               </Box>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Box sx={{ marginRight: '2%' }}>
-              <Button onClick={() => { setOpen(false); setEditPost(null) }}>Cancel</Button>
-              <Button onClick={handlePost}>{editPost ? "Edit" : "Post"}</Button>
-            </Box>
-          </DialogActions>
+            </DialogContent>
+            <DialogActions>
+              <Box sx={{ marginRight: '2%' }}>
+                <Button onClick={() => { setOpen(false); setEditPost(null) }}>Cancel</Button>
+                <Button onClick={handlePost}>{editPost ? "Edit" : "Post"}</Button>
+              </Box>
+            </DialogActions>
+          </Box>
         </Dialog>
       ) : (
         <Box>
