@@ -8,6 +8,7 @@ const subCategoryRouter = require('./subCategoryRouter');
 const userSubjectRouter = require('./userSubjectRouter');
 const activityRouter = require('./activityRouter');
 const notificationRouter = require('./notificationRouter');
+const newPostAlertRouter = require('./newPostAlertRouter');
 
 
 router.use('/activity',activityRouter);
@@ -18,5 +19,6 @@ router.use('/category',categoryRouter);
 router.use('/sub-category',subCategoryRouter);
 router.use( '/user-subject', userSubjectRouter);
 router.use( '/notification', notificationRouter);
+router.use('/alert',newPostAlertRouter);
 
 module.exports = router;
