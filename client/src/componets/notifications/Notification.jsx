@@ -53,7 +53,7 @@ export default function Notification({
           </AccordionSummary>
           <Divider />
           <AccordionDetails>
-            <Box onClick={handleClick}>
+            <Box sx={{textAlign: 'center'}} onClick={handleClick}>
               <Typography>{notification.message}</Typography>
             </Box>
           </AccordionDetails>
