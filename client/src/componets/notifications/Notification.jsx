@@ -3,12 +3,10 @@ import axios from "axios";
 import {
   Box,
   Typography,
-  Divider,
   Accordion,
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 const urlServer = process.env.REACT_APP_URL_SERVER;
 
@@ -33,14 +31,17 @@ export default function Notification({
     }
     return;
   };
+  
   return (
     <Box sx={{ maxWidth: "350px" }}>
       {notification && (
         <Accordion expanded={expanded === panel} onChange={handleOpen}>
+
           <AccordionSummary
             sx={{
               backgroundColor: notification.has_readed ? "white" : "AliceBlue",
             }}
+            
             expandIcon={<ExpandMoreIcon />}
           >
             {notification.has_readed ? (
@@ -51,7 +52,7 @@ export default function Notification({
               </Typography>
             )}
           </AccordionSummary>
-          <Divider />
+
           <AccordionDetails>
             <Box sx={{textAlign: 'center'}} onClick={handleClick}>
               <Typography>{notification.message}</Typography>
