@@ -27,7 +27,19 @@ const getAlert = async () => {
     }
 }
 
+const getMatchedAlert = async () => {
+    try {
+        const result = newPostAlertRepo.getMatchedAlert(req)
+        return result;    
+    }
+    catch (err) {
+        console.error(err)
+        return err;
+    }
+}
+
 module.exports={
     addAlert,
     getAlert,
+    getMatchedAlert,
 }

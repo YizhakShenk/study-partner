@@ -23,16 +23,16 @@ const getAlert = async (email,sub_category,date,time) => {
     }
 }
 
-const getMatchedAlert = async () => {
+const getMatchedAlert = async (sub_category,dateFrom,dateTo,timeFrom,timeTo) => {
     try {
-        const result = await NewPostAlert.findOne({
+        const result = await NewPostAlert.findAll({
             where: {
                     [Op.and]: [
-                        // subject && { sub_category:subject},
-                        // date && { date_from: { [Op.lte]: date } },
-                        // date && { date_to: { [Op.gte]: date } },
-                        // time && { time_from: { [Op.lte]: time } },
-                        // time && { time_to: { [Op.gte]: time } },
+                        sub_category && { sub_category},
+                        // date && { date: { [Op.lte]: date } },
+                        // date && { date: { [Op.gte]: date } },
+                        // time && { time: { [Op.lte]: time } },
+                        // time && { time: { [Op.gte]: time } },
                     ]
                 }
             }
