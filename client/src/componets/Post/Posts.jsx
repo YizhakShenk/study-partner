@@ -41,11 +41,9 @@ export default function Posts() {
     <Box alignItems="center">
       {posts ? (
         <Box>
-          
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          {/* <Box sx={{ display: "flex", justifyContent: "center" }}> */}
             <Filters setPosts={setPosts} handleRendering={handleRendering} />
-          </Box>
-
+          {/* </Box> */}
           <Grid container sx={{ placeContent: "center" }} spacing={1}>
             {posts && posts.length ? (
               posts.map((post, index) => {
