@@ -9,7 +9,7 @@ import Main from '../main/Main';
 import UserProfile from '../userProfile/UserProfile';
 import ConfirmPost from '../confirmPost/ConfirmPost';
 
-import Notifications from '../notifications/Notifications';
+import Notifications from '../notifications/Notification';
 import CreatePost from '../Post/CreatePost';
 
 import { Box } from '@mui/material'
