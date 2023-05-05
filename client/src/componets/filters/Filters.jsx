@@ -70,10 +70,9 @@ export default function Filters({ setPosts, handleRendering }) {
 
   const clearFilter = () => {
     setSubjectName([]);
-    setSubjectName([]);
     setDate(null);
     setTime(null);
-    setRemindMe(false)
+    setRemindMe(false);
     handleRendering();
   };
 

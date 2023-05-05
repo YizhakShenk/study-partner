@@ -11,7 +11,8 @@ const addPost = async (req, res) => {
         res.status(200).send(answer);
     }
     catch (err) {
-        res.status(401).send(err);
+        console.log(err);
+        res.status(401).send(err.message);
     }
 }
 

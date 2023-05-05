@@ -20,7 +20,6 @@ const getAlert = async (user_id, sub_category, date, time) => {
                 [Op.and]: [
                     sub_category && { sub_category: { [Op.like]: sub_category } },
                     user_id && { user_id },
-                    sub_category && { sub_category },
                     date && { date },
                     time && { time }
                 ]

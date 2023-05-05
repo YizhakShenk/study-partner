@@ -57,11 +57,13 @@ const handleSendAlerts = async (alerts) => {
         ids.push(item.user_id);
     });
     const users = await userRepo.getUsers(null, ids);
-    users.forEach(async item => {
-        await notificationRepo.addNotification(user.id, title, message, url);
+    await users.forEach(async item => {
         emailsArray.push(item.email);
+        await notificationRepo.addNotification(item.id, title, message, url);
+
     });
     const strEmails = emailsArray.toString();
+    console.log({strEmails});
     const htmlMessage = `<p>${message} click <a href=${url}> here </a>to view post</p>`//needs to complete edit
     await transferMail(strEmails, title, null, htmlMessage);
 }

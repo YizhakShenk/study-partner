@@ -41,7 +41,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
   const [option, setOption] = useState([""]);
   const [optionSub, setOptionSub] = useState([""]);
   const [comment, setComment] = useState("");
-  const [days, setDays] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [days, setDays] = useState([-1, -1, -1, -1, -1, -1, -1]);
   const [week] = useState(["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"]);
   const [loading, setLoading] = useState(false);
   const [rendering, setRendering] = useState(true);
@@ -127,12 +127,12 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
       }, 1000);
     } catch (err) {
       setLoading(false);
-      handleOpenAlert("error", "post faild");
+      handleOpenAlert("error", err.response.data);
       console.log(err);
     }
   };
 
-  const handleAbleDays = (dFrom, dTo) => {
+  const handleAbleDays = (dFrom=dateFrom, dTo=dateTo) => {
     const distance = daysDistance(dFrom, dTo);
     if (distance < 8) {
       setDays(getOptionalsDays(dFrom.$W, distance));
@@ -233,6 +233,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
                       value={timeTo}
                       onChange={(newValue) => {
                         newValue && setTimeTo(newValue);
+                        handleAbleDays()
                       }}
                       ampm={false}
                       renderInput={(params) => <TextField {...params} />}
