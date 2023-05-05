@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useContext,useReducer } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import UserConnected from "../../context/UserConnected";
 import { Box, Typography, Card, CardContent, IconButton, Alert } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 const urlServer = process.env.REACT_APP_URL_SERVER
 
-export default function RemindMe({ subName, date, time,getDateStemp,getTimeStemp }) {
+export default function RemindMe({ subName, date, time,getDateStemp,getTimeStemp ,clearFilter}) {
     const { userConnected } = useContext(UserConnected)
     const [sstempSubName, setStempSsubName] = useState();
     const [strDay, setStrDay] = useState();
@@ -13,7 +13,6 @@ export default function RemindMe({ subName, date, time,getDateStemp,getTimeStemp
     const [alertMessage, setAlertMessage] = useState('');
     const [opanAlert, setOpanAlert] = useState(false);
     const [alertMode, setAlertMode] = useState('');
-
 
     useEffect(() => {
         if (subName) {
@@ -36,31 +35,23 @@ export default function RemindMe({ subName, date, time,getDateStemp,getTimeStemp
         }
     }, [])
 
-
-    
-
     const handleOpenAlert = (alertStatus, message) => {
         setAlertMode(alertStatus);
         setAlertMessage(message)
         setOpanAlert(true);
         setTimeout(() => {
             setOpanAlert(false);
-        }, 3500)
+            clearFilter();
+        }, 3000)
     }
 
     const remindMe = async () => {
         try {
-            const sstempSubName=''
-            const strDay=''
-            const strTime=''
             if (!userConnected) {
                 alert("you are not logged in please log in to complete");
                 return;
             }
-            console.log(strDay);
-            console.log(strTime);
             const answer = await axios.post(`${urlServer}/alert/add-alert`, { user_id: userConnected.id || null, sub_category: sstempSubName || null, date: getDateStemp(date) || null, time: getTimeStemp(time) || null })
-            console.log(answer);
             handleOpenAlert("success", answer.data);
         }
         catch (err) {

@@ -13,7 +13,7 @@ const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function Posts() {
   const [posts, setPosts] = useState(null);
-  const [postsTemp,setPostsTemp] = useState(null);
+  // const [postsTemp,setPostsTemp] = useState(null);
   const [rendering, setRendering] = useState(false);
 
   const handleRendering = () => {

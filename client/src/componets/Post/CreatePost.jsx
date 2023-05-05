@@ -123,7 +123,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
       setLoading(false);
       handleOpenAlert("success", "post published");
       setTimeout(() => {
-        window.location.reload();
+        // window.location.reload();
       }, 1000);
     } catch (err) {
       setLoading(false);
@@ -179,8 +179,6 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
                 <Autocomplete
                   sx={{ width: '47%', m: 1 }}
                   options={valueCategory ? handleOptionSub() : optionSub}
-                  // defaultValue={editPost?editPost.sub_category:""}
-                  // defaultValue={editPost?editPost.sub_category:""}
                   onChange={(event, newValue) => {
                     setValueSubCategory(newValue);
                   }}
@@ -188,7 +186,6 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
                     setInputSubCategory(newInputValue);
                   }}
                   renderInput={(params) => (
-                    // <TextField {...params} label="Sub Category" />
                     <TextField {...params} label={editPost ? editPost.sub_category : "Sub Category"} />
                   )}
                 />

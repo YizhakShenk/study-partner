@@ -6,17 +6,17 @@ const { convertToReadingPossibility } = require('../utilities/post/adjustungPost
 const addPost = async (reqBody) => {
     try {
         const { email, userId, auther_name, category, sub_category, post, date_from, date_to, time_from, time_to, days } = reqBody;
+        const postExist = await PostRepo.getExistPost(userId, sub_category, date_from, date_to, time_from, time_to, days);
+        if (postExist) {
+            throw new Error("Post already Exist on this user");
+        }
         const PostDetails = { email, userId, auther_name, category, sub_category, post, date_from, date_to, time_from, time_to, days };
-        // const answer = await PostRepo.addPost(PostDetails);
+        const answer = await PostRepo.addPost(PostDetails);
         const alerts = await newPostAlertService.getMatchedAlerts(sub_category, date_from, date_to, time_from, time_to);
-        console.log('ALERT/////////////////////////////////////////////');
-        // console.log({sub_category});
-        console.log({alerts});
-        // if (alerts && alerts.length > 0) {
-        //     // newPostAlertService.handleSendAlerts(alerts);
-        // }
-        console.log('ALERT/////////////////////////////////////////////');
-        return 'answer';  
+        if (alerts && alerts.length > 0) {
+            await newPostAlertService.handleSendAlerts(alerts);
+        }
+        return answer;
     }
     catch (err) {
         console.log(err);

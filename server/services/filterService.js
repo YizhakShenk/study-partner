@@ -1,7 +1,6 @@
 const filterRepo = require('../repositories/filterRepo')
 const {convertToReadingPossibility} = require('../utilities/post/adjustungPostData')
 
-
 const filter = async (req) => {
     try {
         const {subject,date, time,matched } = req.body;  

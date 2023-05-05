@@ -18,12 +18,12 @@ const NewPostAlert = db.define('new_post_alert', {
     },
     date: {
         type: DataTypes.BIGINT,
-        defaultValue:0,
+        allowNull: true
         
     },
     time: {
         type: DataTypes.BIGINT,
-        defaultValue:0,
+        allowNull: true
     },
 },
     {

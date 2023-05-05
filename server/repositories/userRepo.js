@@ -26,6 +26,23 @@ const getAllUsers = async () => {
     }
 }
 
+const getUsers = async (email, id) => {
+    try {
+        let answer;
+        if (email) {
+            answer = await UserModel.findAll({ where: { email } });
+        }
+
+        else if (id) {
+            answer = await UserModel.findAll({ where: { id } });
+        }
+        return answer;
+    }
+    catch (err) {
+        return err;
+    }
+}
+
 const getOneUser = async (email, id) => {
     try {
         let answer;
@@ -34,7 +51,7 @@ const getOneUser = async (email, id) => {
         }
 
         else if (id) {
-            answer = await UserModel.findOne({ where: { id }, include: [PostModel, SubjectModel, NotificationModel ]});
+            answer = await UserModel.findOne({ where: { id }, include: [PostModel, SubjectModel, NotificationModel] });
         }
         if (!answer) {
             throw new Error('user not found');
@@ -79,5 +96,5 @@ const deleteUser = async (email) => {
 }
 
 module.exports = {
-    addUser, getAllUsers, getOneUser, updateUser, deleteUser
+    addUser, getAllUsers, getUsers, getOneUser, updateUser, deleteUser
 }

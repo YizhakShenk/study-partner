@@ -35,54 +35,47 @@ const getAlert = async (user_id, sub_category, date, time) => {
 }
 
 
-// const { Op } = require('sequelize');
-
-// // Define the value to search for
-// const option = 'Eat_Food';
-
-// // Search the database for rows that contain the specified value in the `hobbies` column
-// const rows = await Notification.findAll({
-//   where: {
-//     hobbies: {
-//       [Op.like]: `%${option}%`,
-//     },
-//   },
-// });
-
-// // Log the matching rows to the console
-// console.log(rows);
-
 const getMatchedAlerts = async (sub_category, dateFrom, dateTo, timeFrom, timeTo) => {
     try {
         const result = await NewPostAlert.findAll({
             where: {
                 [Op.and]: [
-                    Sequelize.where(
-                        Sequelize.fn('JSON_CONTAINS', Sequelize.col('sub_category'), JSON.stringify([sub_category])),
-                        true
-                    ),
-                    { date: { [Op.gte]: dateFrom } },
-                    { date: { [Op.lte]: dateTo } },
-                    { time: { [Op.gte]: timeFrom } },
-                    { time: { [Op.lte]: timeTo } },
+                    {
+                        [Op.or]: [
+                            { sub_category: { [Op.eq]: null } },
+                            Sequelize.where(
+                                Sequelize.fn('JSON_CONTAINS', Sequelize.col('sub_category'), JSON.stringify([sub_category])),
+                                true
+                            ),
+                        ]
+                    },
+                    {
+                        [Op.or]: [
+                            { date: { [Op.eq]: null } },
+                            {
+                                [Op.and]: [
+                                    { date: { [Op.gte]: dateFrom } },
+                                    { date: { [Op.lte]: dateTo } },
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        [Op.or]: [
+                            { time: { [Op.eq]: 0 } },
+                            {
+                                [Op.and]: [
+                                    { time: { [Op.gte]: timeFrom } },
+                                    { time: { [Op.lte]: timeTo } },
+                                ]
+                            }
+                        ]
+                    },
+
+
                 ]
             }
-            
-            
         });
-        console.log({ result });
-        //     where: {
-        //         [Op.and]: [
-        //             sub_category && { [Op.contains]: sub_category }, /// contain....
-        //             // { date: { [Op.gte]: dateFrom } },
-        //             // { date: { [Op.lte]: dateTo } },
-        //             // { time: { [Op.gte]: timeFrom } },
-        //             // { time: { [Op.lte]: timeTo } },
-        //         ]
-        //     }
-        // })
-
-        console.log({ result });
         return result;
     }
     catch (err) {

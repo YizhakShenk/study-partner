@@ -12,7 +12,7 @@ const filter = async ({ subject, date, time,matched }) => {
                         date && { date_to: { [Op.gte]: date } },
                         time && { time_from: { [Op.lte]: time } },
                         time && { time_to: { [Op.gte]: time } },
-                        matched && {matched: -1},
+                        !matched && {matched: -1},
                     ]   
                 },
                 order:["matched","date_from"]

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-// import RemindMe from "./RemindMe";
 import RemindMe from "./RemindMe";
 import { Box, Button, TextField, Autocomplete, Grid, Checkbox } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -17,10 +16,6 @@ export default function Filters({ setPosts, handleRendering }) {
   const [subjectName, setSubjectName] = useState([]);
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
-  const [subjectInput, setSubjectInput] = useState([]);
-  const [matched, setMatched] = useState(false);
-
-  const [resonn, setResonn] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -41,30 +36,27 @@ export default function Filters({ setPosts, handleRendering }) {
         console.log(err);
       }
     })();
-  }, [resonn]);
+  }, []);
 
   const getSubName = (subjectName) => { return !subjectName || subjectName.length < 1 ? null : subjectName.map(s => s.name) }
   const getDateStemp = (date) => { return date?.$d.getTime() || null; }
   const getTimeStemp = (time) => { return time?.$H * 100 + time?.$m || null; }
 
-  const filter = async (tempMatched) => {
+  const filter = async () => {
     try {
-
       setRemindMe(false)
       const stempDay = getDateStemp(date)
       const stempTime = getTimeStemp(time);
       let tempSubName = getSubName(subjectName);
-      console.log(tempSubName);
       const postsList = await axios.post(`${urlServer}/post/filter`, {
         subject: tempSubName,
         date: stempDay,
         time: stempTime,
-        matched: tempMatched,
+        matched: false,
       });
       if (!postsList) {
         throw new Error("posts not dound");
       }
-
       if (postsList.data !== [] && postsList.data !== null) {
         setPosts(postsList.data);
       }
@@ -150,7 +142,7 @@ export default function Filters({ setPosts, handleRendering }) {
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
               <Box>
-                <Button sx={{ mr: 1, mb: 5 }} variant="outlined" onClick={() => filter(matched)}>
+                <Button sx={{ mr: 1, mb: 5 }} variant="outlined" onClick={filter}>
                   Filter
                 </Button>
                 <Button sx={{ mb: 5 }} variant="outlined" onClick={clearFilter}>
@@ -167,6 +159,7 @@ export default function Filters({ setPosts, handleRendering }) {
             time={time}
             getDateStemp={getDateStemp}
             getTimeStemp={getTimeStemp}
+            clearFilter={clearFilter}
           />}
         </Box>
       </Box>

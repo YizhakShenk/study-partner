@@ -12,7 +12,6 @@ const addNotification = async (req,res) => {
 }
 
 const updateNotification = async (req,res) => {
-    console.log('contro;////////////////////////////////');
     try {
         const answer = await notificationService.updateNotification(req);
         res.status(200).send(answer);
