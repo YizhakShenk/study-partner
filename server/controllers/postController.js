@@ -5,6 +5,9 @@ const PostService = require('../services/PostService');
 const addPost = async (req, res) => {
     try {
         const answer = await PostService.addPost(req.body);
+        if(answer.message !==undefined){
+            throw new Error(answer.message);
+        }
         res.status(200).send(answer);
     }
     catch (err) {

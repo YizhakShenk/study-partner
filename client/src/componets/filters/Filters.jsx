@@ -11,14 +11,16 @@ import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 const urlServer = process.env.REACT_APP_URL_SERVER
 
-export default function Filters({ setPosts }) {
+export default function Filters({ setPosts, handleRendering }) {
   const [remindMe, setRemindMe] = useState(false);
-  const [categoriesOptions, setCategoriesOptions] = useState([""]);
+  const [categoriesOptions, setCategoriesOptions] = useState([]);
   const [subjectName, setSubjectName] = useState([]);
   const [date, setDate] = useState(null);
   const [time, setTime] = useState(null);
-  const [subjectInput, setSubjectInput] = useState("");
+  const [subjectInput, setSubjectInput] = useState([]);
   const [matched, setMatched] = useState(false);
+
+  const [resonn, setResonn] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -28,7 +30,7 @@ export default function Filters({ setPosts }) {
         result.data.forEach((cat) => {
           cat.subjects.forEach((subCat) => {
             newArr.push({
-              id: subCat.id,
+              // id: subCat.id,
               name: subCat.name,
               category: cat.name,
             });
@@ -39,18 +41,20 @@ export default function Filters({ setPosts }) {
         console.log(err);
       }
     })();
-  }, []);
+  }, [resonn]);
 
-  const getSubName = (subjectName) => { return !subjectName || subjectName.length < 1 ? null : subjectName }
+  const getSubName = (subjectName) => { return !subjectName || subjectName.length < 1 ? null : subjectName.map(s => s.name) }
   const getDateStemp = (date) => { return date?.$d.getTime() || null; }
   const getTimeStemp = (time) => { return time?.$H * 100 + time?.$m || null; }
-  
+
   const filter = async (tempMatched) => {
     try {
+
       setRemindMe(false)
       const stempDay = getDateStemp(date)
       const stempTime = getTimeStemp(time);
       let tempSubName = getSubName(subjectName);
+      console.log(tempSubName);
       const postsList = await axios.post(`${urlServer}/post/filter`, {
         subject: tempSubName,
         date: stempDay,
@@ -73,11 +77,12 @@ export default function Filters({ setPosts }) {
   };
 
   const clearFilter = () => {
-    setRemindMe(false)
+    setSubjectName([]);
     setSubjectName([]);
     setDate(null);
     setTime(null);
-    setSubjectInput("");
+    setRemindMe(false)
+    handleRendering();
   };
 
   return (
@@ -94,16 +99,12 @@ export default function Filters({ setPosts }) {
               <Autocomplete
                 size="small"
                 sx={{ display: "inline-block", maxWidth: "262px", width: "100%" }}
-                multiple
-                options={categoriesOptions
-                  ? categoriesOptions.sort((a, b) =>
-                    a.category.localeCompare(b.category)
-                  )
-                  : []}
+                multiple={true}
+                options={categoriesOptions ? categoriesOptions : []}
                 disableCloseOnSelect
+                value={subjectName}
                 getOptionLabel={(option) => option.name}
                 groupBy={(option) => option.category}
-                inputValue={subjectInput}
                 renderOption={(props, option, { selected }) => (
                   <li {...props}>
                     <Checkbox
@@ -116,15 +117,11 @@ export default function Filters({ setPosts }) {
                 )}
                 onChange={(event, newValue) => {
                   if (newValue.length < 4) {
-                    const tempSub = newValue.map(item => item.name)
-                    newValue && setSubjectName(tempSub);
+                    setSubjectName([...newValue]);
                   }
                 }}
-                onInputChange={(event, newInputValue) => {
-                  setSubjectInput(newInputValue ? newInputValue : "");
-                }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Category" />
+                  <TextField {...params} label="Subject (max 3 choices)" />
                 )}
               />
             </Grid>
@@ -168,6 +165,8 @@ export default function Filters({ setPosts }) {
             subName={getSubName(subjectName)}
             date={date}
             time={time}
+            getDateStemp={getDateStemp}
+            getTimeStemp={getTimeStemp}
           />}
         </Box>
       </Box>

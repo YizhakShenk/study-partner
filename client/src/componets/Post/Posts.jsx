@@ -13,10 +13,15 @@ const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function Posts() {
   const [posts, setPosts] = useState(null);
+  const [postsTemp,setPostsTemp] = useState(null);
   const [rendering, setRendering] = useState(false);
+
   const handleRendering = () => {
     setRendering(!rendering);
   };
+  // const handleClear = () => {
+  //   setPosts(postsTemp)
+  // };
 
 
   useEffect(() => {
@@ -29,6 +34,7 @@ export default function Posts() {
         if (!postsList) {
           throw new Error("posts not dound");
         } else {
+          setPosts(postsList);
           setPosts(postsList);
         }
       } catch (err) {

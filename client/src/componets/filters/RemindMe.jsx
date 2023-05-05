@@ -1,41 +1,71 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext,useReducer } from "react";
 import axios from "axios";
 import UserConnected from "../../context/UserConnected";
-import { Box, Button, Typography, Card, CardContent, CardMedia, CardActions, IconButton } from "@mui/material";
+import { Box, Typography, Card, CardContent, IconButton, Alert } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 const urlServer = process.env.REACT_APP_URL_SERVER
 
-export default function RemindMe({ subName, date, time }) {
+export default function RemindMe({ subName, date, time,getDateStemp,getTimeStemp }) {
     const { userConnected } = useContext(UserConnected)
     const [sstempSubName, setStempSsubName] = useState();
-    const [sstempDay, setSstempDay] = useState();
-    const [sstempTime, setSstempTime] = useState();
+    const [strDay, setStrDay] = useState();
+    const [strTime, setStrTime] = useState();
+    const [alertMessage, setAlertMessage] = useState('');
+    const [opanAlert, setOpanAlert] = useState(false);
+    const [alertMode, setAlertMode] = useState('');
+
 
     useEffect(() => {
         if (subName) {
-            setStempSsubName(subName.toString());
+            setStempSsubName(subName);
         }
-        if (date) {
-            setSstempDay(`${date.$D < 10 ? "0" : ""}${date.$D}/${date.$M + 1 < 10 ? "0" : ""}${date.$M + 1}/${date.$y}`);
+        else {
+            setStempSsubName(null);
         }
-        if (time) {
-            setSstempTime(`${time.$H < 10 ? "0" : ""}${time.$H}:${time.$m < 10 ? "0" : ""}${time.$m}`);
+        if (date &&  !isNaN(date.$D)) {
+            setStrDay(`${date.$D < 10 ? "0" : ""}${date.$D}/${date.$M + 1 < 10 ? "0" : ""}${date.$M + 1}/${date.$y}`);
         }
-    }, [subName, date, time])
+        else {
+            setStrDay(null);
+        }
+        if (time && !isNaN(time.$D)) {
+            setStrTime(`${time.$H < 10 ? "0" : ""}${time.$H}:${time.$m < 10 ? "0" : ""}${time.$m}`);
+        }
+        else { 
+            setStrTime(null) 
+        }
+    }, [])
+
+
+    
+
+    const handleOpenAlert = (alertStatus, message) => {
+        setAlertMode(alertStatus);
+        setAlertMessage(message)
+        setOpanAlert(true);
+        setTimeout(() => {
+            setOpanAlert(false);
+        }, 3500)
+    }
 
     const remindMe = async () => {
         try {
+            const sstempSubName=''
+            const strDay=''
+            const strTime=''
             if (!userConnected) {
                 alert("you are not logged in please log in to complete");
                 return;
             }
-            console.log(sstempDay);
-            console.log(sstempTime);
-            const answer = await axios.post(`${urlServer}/alert/add-alert`, { email: userConnected.email || null, sub_category: sstempSubName || null, date: sstempDay || null, time: sstempTime || null })
+            console.log(strDay);
+            console.log(strTime);
+            const answer = await axios.post(`${urlServer}/alert/add-alert`, { user_id: userConnected.id || null, sub_category: sstempSubName || null, date: getDateStemp(date) || null, time: getTimeStemp(time) || null })
             console.log(answer);
+            handleOpenAlert("success", answer.data);
         }
         catch (err) {
             console.log(err);
+            handleOpenAlert("error", err.response.data);
         }
     }
     return (
@@ -46,18 +76,20 @@ export default function RemindMe({ subName, date, time }) {
                     maxWidth: 500,
                 }}
             >
+                <Box sx={{ position: 'relative' }}>
+                    {opanAlert ? <Alert onClose={() => setOpanAlert(false)} sx={{ position: 'absolute', width: '100%' }} severity={alertMode}>{alertMessage}</Alert> : null}
+                </Box>
                 <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
                     <CardContent sx={{}}>
                         <Box sx={{ textAlign: 'start' }}>
                             <Typography variant="h6">we havn't find any post match with your filter</Typography>
                             {sstempSubName && <Typography>Subject: {sstempSubName} </Typography>}
-                            {sstempDay && <Typography>Date: {sstempDay} </Typography>}
-                            {sstempTime && <Typography>Time: {sstempTime} </Typography>}
+                            {strDay && <Typography>Date: {strDay} </Typography>}
+                            {strTime && <Typography>Time: {strTime} </Typography>}
                         </Box>
                     </CardContent>
                     <CardContent sx={{}}>
                         <Typography variant="h6"> click here if you like to get an alert when someone will post similar as you searched</Typography>
-                        {/* <Typography variant="h6"> click here if you like to get an alert on {sstempSubName} on {sstempDay} at {sstempTime} click below</Typography> */}
                         <IconButton onClick={remindMe}>
                             <AddIcon color="primary" fontSize="large" />
                         </IconButton>

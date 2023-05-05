@@ -105,7 +105,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         id: editPost ? editPost.id : null,
         userId: editPost ? null : userConnected.id || null,
         auther_name: userConnected.name || null,
-        post: comment || null,
+        post: comment || '',
         category: inputCategory,
         sub_category: inputSubCategory,
         date_from: dFrom,
@@ -114,7 +114,6 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         time_to: tTo,
         days: days || null
       }
-      console.log(post);
       if (!editPost) {
         await axios.post(`${urlServer}/post/add`, post);
       }
@@ -126,8 +125,8 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
       setTimeout(() => {
         window.location.reload();
       }, 1000);
-
     } catch (err) {
+      setLoading(false);
       handleOpenAlert("error", "post faild");
       console.log(err);
     }
