@@ -3,7 +3,7 @@ const newPostAlertService = require('../services/newPostAlertService');
 const addAlert = async (req,res) => {
     try {
         const result =await newPostAlertService.addAlert(req)
-        if(result.message!== undefined){
+        if(result.message !== undefined){
             throw Error(result.message)
         }
         res.status(200).send(result)

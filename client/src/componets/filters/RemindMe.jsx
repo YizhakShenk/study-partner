@@ -1,64 +1,66 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import UserConnected from "../../context/UserConnected";
-import {
-  Box,
-  Button,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-const urlServer = process.env.REACT_APP_URL_SERVER;
 
-export default function RemindMe({ subName, date, time }) {
-  const { userConnected } = useContext(UserConnected);
-  const [sstempSubName, setStempSsubName] = useState();
-  const [sstempDay, setSstempDay] = useState();
-  const [sstempTime, setSstempTime] = useState();
+import { Box, Typography, Card, CardContent, IconButton, Alert } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
+const urlServer = process.env.REACT_APP_URL_SERVER
 
-  useEffect(() => {
-    if (subName) {
-      setStempSsubName(subName.toString());
-    }
-    if (date) {
-      setSstempDay(
-        `${date.$D < 10 ? "0" : ""}${date.$D}/${date.$M + 1 < 10 ? "0" : ""}${
-          date.$M + 1
-        }/${date.$y}`
-      );
-    }
-    if (time) {
-      setSstempTime(
-        `${time.$H < 10 ? "0" : ""}${time.$H}:${time.$m < 10 ? "0" : ""}${
-          time.$m
-        }`
-      );
-    }
-  }, [subName, date, time]);
+export default function RemindMe({ subName, date, time,getDateStemp,getTimeStemp ,clearFilter}) {
+    const { userConnected } = useContext(UserConnected)
+    const [sstempSubName, setStempSsubName] = useState();
+    const [strDay, setStrDay] = useState();
+    const [strTime, setStrTime] = useState();
+    const [alertMessage, setAlertMessage] = useState('');
+    const [opanAlert, setOpanAlert] = useState(false);
+    const [alertMode, setAlertMode] = useState('');
 
-  const remindMe = async () => {
-    try {
-      if (!userConnected) {
-        alert("you are not logged in please log in to complete");
-        return;
-      }
-      console.log(sstempDay);
-      console.log(sstempTime);
-      const answer = await axios.post(`${urlServer}/alert/add-alert`, {
-        email: userConnected.email || null,
-        sub_category: sstempSubName || null,
-        date: sstempDay || null,
-        time: sstempTime || null,
-      });
-      console.log(answer);
-    } catch (err) {
-      console.log(err.message);
-      console.log(err.response);
+    useEffect(() => {
+        if (subName) {
+            setStempSsubName(subName);
+        }
+        else {
+            setStempSsubName(null);
+        }
+        if (date &&  !isNaN(date.$D)) {
+            setStrDay(`${date.$D < 10 ? "0" : ""}${date.$D}/${date.$M + 1 < 10 ? "0" : ""}${date.$M + 1}/${date.$y}`);
+        }
+        else {
+            setStrDay(null);
+        }
+        if (time && !isNaN(time.$D)) {
+            setStrTime(`${time.$H < 10 ? "0" : ""}${time.$H}:${time.$m < 10 ? "0" : ""}${time.$m}`);
+        }
+        else { 
+            setStrTime(null) 
+        }
+    }, [])
+
+    const handleOpenAlert = (alertStatus, message) => {
+        setAlertMode(alertStatus);
+        setAlertMessage(message)
+        setOpanAlert(true);
+        setTimeout(() => {
+            setOpanAlert(false);
+            clearFilter();
+        }, 3000)
     }
-  };
-  return (
+
+    const remindMe = async () => {
+        try {
+            if (!userConnected) {
+                alert("you are not logged in please log in to complete");
+                return;
+            }
+            const answer = await axios.post(`${urlServer}/alert/add-alert`, { user_id: userConnected.id || null, sub_category: sstempSubName || null, date: getDateStemp(date) || null, time: getTimeStemp(time) || null })
+            handleOpenAlert("success", answer.data);
+        }
+        catch (err) {
+            console.log(err);
+            handleOpenAlert("error", err.response.data);
+        }
+    }
+    return (
     <Box
       display="flex"
       justifyContent="center"
@@ -66,7 +68,9 @@ export default function RemindMe({ subName, date, time }) {
       width={"100%"}
     >
       <Card sx={{ width: "50%" }}>
-        
+        <Box sx={{ position: 'relative' }}>
+                    {opanAlert ? <Alert onClose={() => setOpanAlert(false)} sx={{ position: 'absolute', width: '100%' }} severity={alertMode}>{alertMessage}</Alert> : null}
+                </Box>
               <CardContent sx={{ textAlign: "start" }}>
                 <Typography variant="h6">
                   we havn't find any post match with your filter
@@ -102,4 +106,3 @@ export default function RemindMe({ subName, date, time }) {
       </Card>
     </Box>
   );
-}

@@ -8,10 +8,9 @@ const NewPostAlert = db.define('new_post_alert', {
         allowNull: false,
         primaryKey: true,
     },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false
-
+    user_id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
     },
     sub_category: {
         type: DataTypes.JSON,
@@ -19,11 +18,12 @@ const NewPostAlert = db.define('new_post_alert', {
     },
     date: {
         type: DataTypes.BIGINT,
-        allowNull: true,
+        allowNull: true
+        
     },
     time: {
         type: DataTypes.BIGINT,
-        allowNull: true,
+        allowNull: true
     },
 },
     {

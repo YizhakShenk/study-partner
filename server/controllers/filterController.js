@@ -1,6 +1,5 @@
 const filterService =require('../services/filterService');
 
-
 const filter = async (req, res) => {
     try {
         const result = await filterService.filter(req);
@@ -11,8 +10,6 @@ const filter = async (req, res) => {
         res.status(404).send(err.message);
     }
 }
-
-
 
 module.exports ={
     filter

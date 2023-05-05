@@ -41,7 +41,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
   const [option, setOption] = useState([""]);
   const [optionSub, setOptionSub] = useState([""]);
   const [comment, setComment] = useState("");
-  const [days, setDays] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [days, setDays] = useState([-1, -1, -1, -1, -1, -1, -1]);
   const [week] = useState(["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"]);
   const [loading, setLoading] = useState(false);
   const [rendering, setRendering] = useState(true);
@@ -105,7 +105,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         id: editPost ? editPost.id : null,
         userId: editPost ? null : userConnected.id || null,
         auther_name: userConnected.name || null,
-        post: comment || null,
+        post: comment || '',
         category: inputCategory,
         sub_category: inputSubCategory,
         date_from: dFrom,
@@ -114,7 +114,6 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         time_to: tTo,
         days: days || null
       }
-      console.log(post);
       if (!editPost) {
         await axios.post(`${urlServer}/post/add`, post);
       }
@@ -124,16 +123,16 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
       setLoading(false);
       handleOpenAlert("success", "post published");
       setTimeout(() => {
-        window.location.reload();
+        // window.location.reload();
       }, 1000);
-
     } catch (err) {
-      handleOpenAlert("error", "post faild");
+      setLoading(false);
+      handleOpenAlert("error", err.response.data);
       console.log(err);
     }
   };
 
-  const handleAbleDays = (dFrom, dTo) => {
+  const handleAbleDays = (dFrom=dateFrom, dTo=dateTo) => {
     const distance = daysDistance(dFrom, dTo);
     if (distance < 8) {
       setDays(getOptionalsDays(dFrom.$W, distance));
@@ -180,8 +179,6 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
                 <Autocomplete
                   sx={{ width: '47%', m: 1 }}
                   options={valueCategory ? handleOptionSub() : optionSub}
-                  // defaultValue={editPost?editPost.sub_category:""}
-                  // defaultValue={editPost?editPost.sub_category:""}
                   onChange={(event, newValue) => {
                     setValueSubCategory(newValue);
                   }}
@@ -189,7 +186,6 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
                     setInputSubCategory(newInputValue);
                   }}
                   renderInput={(params) => (
-                    // <TextField {...params} label="Sub Category" />
                     <TextField {...params} label={editPost ? editPost.sub_category : "Sub Category"} />
                   )}
                 />
@@ -237,6 +233,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
                       value={timeTo}
                       onChange={(newValue) => {
                         newValue && setTimeTo(newValue);
+                        handleAbleDays()
                       }}
                       ampm={false}
                       renderInput={(params) => <TextField {...params} />}

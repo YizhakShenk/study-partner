@@ -1,13 +1,21 @@
-const { json } = require('sequelize');
 const PostRepo = require('../repositories/postRepo');
+const newPostAlertRepo = require('../repositories/newPostAlertRepo');
+const newPostAlertService = require('../services/newPostAlertService');
 const { convertToReadingPossibility } = require('../utilities/post/adjustungPostData');
 
 const addPost = async (reqBody) => {
     try {
         const { email, userId, auther_name, category, sub_category, post, date_from, date_to, time_from, time_to, days } = reqBody;
+        const postExist = await PostRepo.getExistPost(userId, sub_category, date_from, date_to, time_from, time_to, days);
+        if (postExist) {
+            throw new Error("Post already Exist on this user");
+        }
         const PostDetails = { email, userId, auther_name, category, sub_category, post, date_from, date_to, time_from, time_to, days };
         const answer = await PostRepo.addPost(PostDetails);
-
+        const alerts = await newPostAlertService.getMatchedAlerts(sub_category, date_from, date_to, time_from, time_to);
+        if (alerts && alerts.length > 0) {
+            await newPostAlertService.handleSendAlerts(alerts);
+        }
         return answer;
     }
     catch (err) {
@@ -82,8 +90,8 @@ const getPosts = async () => {
 const updatePost = async (reqBody) => {
 
     try {
-        {}
-        const { id, sub_category, post, date_from, date_to, time_from, time_to, days} = reqBody;
+        { }
+        const { id, sub_category, post, date_from, date_to, time_from, time_to, days } = reqBody;
         const updatedValues = {
             sub_category: sub_category || undefined,
             post: post || undefined,
