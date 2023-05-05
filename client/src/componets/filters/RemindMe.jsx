@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import UserConnected from "../../context/UserConnected";
+
 import { Box, Typography, Card, CardContent, IconButton, Alert } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 const urlServer = process.env.REACT_APP_URL_SERVER
@@ -60,33 +61,48 @@ export default function RemindMe({ subName, date, time,getDateStemp,getTimeStemp
         }
     }
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-            <Card
-                sx={{
-                    margin: 3,
-                    maxWidth: 500,
-                }}
-            >
-                <Box sx={{ position: 'relative' }}>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      width={"100%"}
+    >
+      <Card sx={{ width: "50%" }}>
+        <Box sx={{ position: 'relative' }}>
                     {opanAlert ? <Alert onClose={() => setOpanAlert(false)} sx={{ position: 'absolute', width: '100%' }} severity={alertMode}>{alertMessage}</Alert> : null}
                 </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', textAlign: 'center' }}>
-                    <CardContent sx={{}}>
-                        <Box sx={{ textAlign: 'start' }}>
-                            <Typography variant="h6">we havn't find any post match with your filter</Typography>
-                            {sstempSubName && <Typography>Subject: {sstempSubName} </Typography>}
-                            {strDay && <Typography>Date: {strDay} </Typography>}
-                            {strTime && <Typography>Time: {strTime} </Typography>}
-                        </Box>
-                    </CardContent>
-                    <CardContent sx={{}}>
-                        <Typography variant="h6"> click here if you like to get an alert when someone will post similar as you searched</Typography>
-                        <IconButton onClick={remindMe}>
-                            <AddIcon color="primary" fontSize="large" />
-                        </IconButton>
-                    </CardContent>
-                </Box>
-            </Card>
-        </Box >
-    )
-}
+              <CardContent sx={{ textAlign: "start" }}>
+                <Typography variant="h6">
+                  we havn't find any post match with your filter
+                </Typography>
+                {sstempSubName && (
+                  <Typography variant="subtitle1">
+                    Subject: {sstempSubName}
+                  </Typography>
+                )}
+                {sstempDay && (
+                  <Typography variant="subtitle1">
+                    Date: {sstempDay}
+                  </Typography>
+                )}
+                {sstempTime && (
+                  <Typography variant="subtitle1">
+                    Time: {sstempTime}
+                  </Typography>
+                )}
+              </CardContent>
+              <CardContent sx={{ textAlign: "start" }}>
+                <Typography variant="body1">
+                  click below if you like to get an alert when someone will post
+                   as you searched
+                </Typography>
+              </CardContent>
+        <CardActions sx={{ justifyContent: "center" }}>
+          <Button variant="outlined" onClick={remindMe} >
+            alert me
+          <AddIcon color="primary"  />
+          </Button>
+        </CardActions>
+      </Card>
+    </Box>
+  );
