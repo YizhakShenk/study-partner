@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useContext } from "react";
 import axios from "axios";
+import NotificationsContext from "../../context/NotificationsContext";
 import {
   Box,
   Typography,
@@ -8,6 +9,7 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+
 const urlServer = process.env.REACT_APP_URL_SERVER;
 
 export default function Notification({
@@ -16,6 +18,8 @@ export default function Notification({
   handleChangePanel,
   panel,
 }) {
+
+  const { userNotifications, setUserNotifications } = useContext(NotificationsContext);
   const handleOpen = async () => {
     handleChangePanel(panel);
     if (!notification.has_readed) {
@@ -23,6 +27,22 @@ export default function Notification({
         id: notification.id,
         has_readed: true,
       });
+      const temp = userNotifications?.map((item) => {
+        if (item.id === notification.id) {
+          return {
+            id: notification.id,
+            user_id: notification.user_id,
+            title:notification.title ,
+            message:notification.message,
+            url:notification.url ,
+            has_readed: true,
+          }
+        }
+        else {
+          return item;
+        }
+      })
+      setUserNotifications(temp);
     }
   };
   const handleClick = () => {
@@ -31,7 +51,7 @@ export default function Notification({
     }
     return;
   };
-  
+
   return (
     <Box sx={{ maxWidth: "350px" }}>
       {notification && (
@@ -41,7 +61,7 @@ export default function Notification({
             sx={{
               backgroundColor: notification.has_readed ? "white" : "AliceBlue",
             }}
-            
+
             expandIcon={<ExpandMoreIcon />}
           >
             {notification.has_readed ? (
@@ -54,7 +74,7 @@ export default function Notification({
           </AccordionSummary>
 
           <AccordionDetails>
-            <Box sx={{textAlign: 'center'}} onClick={handleClick}>
+            <Box sx={{ textAlign: 'center' }} onClick={handleClick}>
               <Typography>{notification.message}</Typography>
             </Box>
           </AccordionDetails>

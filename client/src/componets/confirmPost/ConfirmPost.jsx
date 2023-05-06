@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import UserConnected from "../../context/UserConnected.js";
+import UserContext from "../../context/UserContext.js";
 import {
     Box,
     Button,
@@ -15,10 +15,10 @@ const urlServer = process.env.REACT_APP_URL_SERVER
 
 export default function ConfirmPost({ setOpenLogIn }) {
     const [paramseS] = useSearchParams();
+    const { user } = useContext(UserContext);
     const postid = paramseS.get('pid');
     const the_applicant_id = paramseS.get('aid');
     const day = paramseS.get('day');
-    const { userConnected } = useContext(UserConnected);
     const [applicant, setApplicant] = useState();
     const [progressTrans, setProgressTrans] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
@@ -29,9 +29,6 @@ export default function ConfirmPost({ setOpenLogIn }) {
 
     useEffect(() => {
         (async () => {
-            console.log('pid', postid);
-            console.log('aid', the_applicant_id);
-            console.log('day', day);
             try {
                 if (the_applicant_id !== undefined && the_applicant_id) {
                     const temp = await axios.post(`${urlServer}/user/get-one`, { id: the_applicant_id }, { withCredentials: true });
@@ -58,7 +55,7 @@ export default function ConfirmPost({ setOpenLogIn }) {
         setOpanAlert(false);
     }
     const authConnected = () => {
-        if (!userConnected) {
+        if (!user) {
             setOpenLogIn(true);
             return true;
         }
@@ -77,7 +74,7 @@ export default function ConfirmPost({ setOpenLogIn }) {
                 return;
             }
             setProgressTrans(true);
-            const answer = await axios.post(urlServer + '/activity/confirm-post', { applicantId: the_applicant_id, postId: postid, day }, { withCredentials: true });
+            await axios.post(urlServer + '/activity/confirm-post', { applicantId: the_applicant_id, postId: postid, day }, { withCredentials: true });
             setProgressTrans(false);
             handleOpenAlert("success", "Email sent successful");
             setTimeout(() => {
@@ -100,7 +97,7 @@ export default function ConfirmPost({ setOpenLogIn }) {
         }
         try {
             setProgressTrans(true);
-            const answer = await axios.post(urlServer + '/activity/deny-post', { applicantId: the_applicant_id, postId: postid }, { withCredentials: true });
+            await axios.post(urlServer + '/activity/deny-post', { applicantId: the_applicant_id, postId: postid }, { withCredentials: true });
             setProgressTrans(false);
             handleOpenAlert("success", "Email sent successful");
             setTimeout(() => {

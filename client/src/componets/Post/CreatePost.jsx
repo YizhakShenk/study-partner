@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import UserConnected from "../../context/UserConnected";
+import UserContext from "../../context/UserContext";
+import UserDetailsContext from "../../context/UserDetailsContext";
+// import PostsContext from "../../context/PostsContext";
 import { daysDistance, weekIsEmpty, getOptionalsDays } from '../../utilities/validetion/validateDate';
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -24,8 +26,9 @@ const urlServer = process.env.REACT_APP_URL_SERVER
 const tempDate = dayjs(new Date().setHours(0, 0, 0, 0));
 
 export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
-  const { userConnected } = useContext(UserConnected);
-
+  const { user } = useContext(UserContext);
+  const { userDetails } = useContext(UserDetailsContext);
+  // const { posts, setPosts } = useContext(PostsContext);
   const [alertMessage, setAlertMessage] = useState('')
   const [opanAlert, setOpanAlert] = useState(false);
   const [alertMode, setAlertMode] = useState('')
@@ -103,8 +106,8 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
 
       const post = {
         id: editPost ? editPost.id : null,
-        userId: editPost ? null : userConnected.id || null,
-        auther_name: userConnected.name || null,
+        userId: editPost ? null : user.id || null,
+        auther_name: userDetails.name || null,
         post: comment || '',
         category: inputCategory,
         sub_category: inputSubCategory,
@@ -114,16 +117,17 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         time_to: tTo,
         days: days || null
       }
+
       if (!editPost) {
         await axios.post(`${urlServer}/post/add`, post);
       }
       else {
-        await axios.put(`${urlServer}/post/update`, post)
+        await axios.put(`${urlServer}/post/update`, post);
       }
       setLoading(false);
       handleOpenAlert("success", "post published");
       setTimeout(() => {
-        // window.location.reload();
+        window.location.reload();
       }, 1000);
     } catch (err) {
       setLoading(false);
@@ -132,7 +136,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
     }
   };
 
-  const handleAbleDays = (dFrom=dateFrom, dTo=dateTo) => {
+  const handleAbleDays = (dFrom = dateFrom, dTo = dateTo) => {
     const distance = daysDistance(dFrom, dTo);
     if (distance < 8) {
       setDays(getOptionalsDays(dFrom.$W, distance));

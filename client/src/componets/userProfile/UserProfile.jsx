@@ -3,7 +3,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import axios from 'axios';
 import UserPosts from './UserPosts';
-import UserConnected from '../../context/UserConnected';
+import UserContext from '../../context/UserContext';
 
 import {
   Paper,
@@ -22,19 +22,19 @@ export default function UserProfile() {
   const {
     state: { userId },
   } = useLocation();
-  const [user, setUser] = useState();
+  const [userData, setUserData] = useState();
   const [rate, setRate] = useState(null);
   const [isRating, setIsRating] = useState(false);
-  const { userConnected } = useContext(UserConnected);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     (async () => {
       try {
-        const userData = await axios.post(`${urlServer}/user/get-one`, {
+        const answer = await axios.post(`${urlServer}/user/get-one`, {
           id: userId,
         });
-        setUser(userData.data);
-        setRate(userData.data.rate);
+        setUserData(answer.data);
+        setRate(answer.data.rate);
       } catch (err) {
         console.log(err);
       }
@@ -45,7 +45,7 @@ export default function UserProfile() {
     console.log("newVal >>", newValue);
     const newRate = await axios.put(
       urlServer + "/activity/rate-user",
-      { email: user.email, rate: newValue },
+      { email: userData.email, rate: newValue },
       { withCredentials: true }
     );
 
@@ -58,7 +58,7 @@ export default function UserProfile() {
   };
   return (
     <Box>
-      {user ? (
+      {userData ? (
         <Box>
           <Box sx={{ flexGrow: 1 }}>
             <Grid container minHeight={300}>
@@ -75,7 +75,7 @@ export default function UserProfile() {
                       handleRate(newValue);
                     }}
                   />
-                  {userConnected && (
+                  {user && (
                     <Box>
                       {!isRating ? (
                         <Button
@@ -109,7 +109,7 @@ export default function UserProfile() {
                     color="primary"
                     variant="h3"
                   >
-                    {user.name}
+                    {userData.name}
                   </Typography>
                 </Box>
                 <Box
@@ -130,7 +130,7 @@ export default function UserProfile() {
                     }}
                   >
                     <Typography variant="caption">Age:</Typography>
-                    <Typography sx={{}}>{user.age}</Typography>
+                    <Typography sx={{}}>{userData.age}</Typography>
                   </Paper>
                   <Paper
                     sx={{
@@ -143,7 +143,7 @@ export default function UserProfile() {
                     }}
                   >
                     <Typography variant="caption">Country:</Typography>
-                    <Typography sx={{}}>{user.country}</Typography>
+                    <Typography sx={{}}>{userData.country}</Typography>
                   </Paper>
                   <Paper
                     sx={{
@@ -156,7 +156,7 @@ export default function UserProfile() {
                     }}
                   >
                     <Typography variant="caption">Languages Skill:</Typography>
-                    <Typography sx={{}}>{user.languages}</Typography>
+                    <Typography sx={{}}>{userData.languages}</Typography>
                   </Paper>
                 </Box>
                 <Box sx={{ minWidth: "95%", m: 3 }}>
@@ -171,7 +171,7 @@ export default function UserProfile() {
                   >
                     <Typography variant="caption">About Me:</Typography>
                     <Typography>
-                      {user.about || "User hasn't added yet..."}
+                      {userData.about || "User hasn't added yet..."}
                     </Typography>
                   </Paper>
                 </Box>
@@ -188,15 +188,13 @@ export default function UserProfile() {
                   >
                     <Typography
                       variant="caption"
-                      // variant="body1"
-                      // sx={{ textDecoration: "underline" }}
                     >
                       Subjects:
                     </Typography>
-                    {user.subjects.length > 0 ? (
+                    {userData.subjects.length > 0 ? (
                       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                        {user.subjects &&
-                          user.subjects.map((item, index) => {
+                        {userData.subjects &&
+                          userData.subjects.map((item, index) => {
                             return (
                               <Paper key={index} sx={{ m: 3, padding: 2 }}>
                                 <Typography align="center">
@@ -215,7 +213,7 @@ export default function UserProfile() {
             </Grid>
           </Box>
           <Divider />
-          <Box>{user.posts && <UserPosts posts={user.posts} />}</Box>
+          <Box>{userData.posts && <UserPosts posts={userData.posts} />}</Box>
         </Box>
       ) : (
         <Box sx={{ marginTop: "20%" }}>

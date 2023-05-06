@@ -1,14 +1,22 @@
 import axios from "axios";
 import React, { useState, useContext } from "react";
-import UserConnected from "../../context/UserConnected";
+import UserContext from "../../context/UserContext";
+import UserDetailsContext from "../../context/UserDetailsContext";
+import UserSubjectsContext from "../../context/UserSubjectsContext";
+import UserPostsContext from "../../context/UserPostsContext";
+import NotificationsContext from "../../context/NotificationsContext";
 import { emailValid, passwordValid } from "../../utilities/validetion/validetion.js";
 import { Box, Typography, TextField, Button, Link } from "@mui/material";
 
 export default function Login({ handleAuthMode, handleCloseLogIn, handleOpenAlert }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setUserConnected } = useContext(UserConnected);
-  const urlServer= process.env.REACT_APP_URL_SERVER
+  const { setUser } = useContext(UserContext);
+  const { setUserDetails } = useContext(UserDetailsContext);
+  const { setUserSubjects } = useContext(UserSubjectsContext);
+  const { setUserPosts } = useContext(UserPostsContext);
+  const { setUserNotifications } = useContext(NotificationsContext);
+  const urlServer = process.env.REACT_APP_URL_SERVER
 
   const submit = async () => {
     if (!email || !password) {
@@ -27,8 +35,21 @@ export default function Login({ handleAuthMode, handleCloseLogIn, handleOpenAler
         );
         sessionStorage.setItem("user", JSON.stringify(answer.data));
         sessionStorage.setItem("user_id", JSON.stringify(answer.data.id));
-        setUserConnected(answer.data);
-
+        const details = {
+          name: answer.data.name,
+          age: answer.data.age,
+          email: answer.data.email,
+          phone_number: answer.data.phone_number,
+          country: answer.data.country,
+          languages: answer.data.languages,
+          about: answer.data.about,
+        }
+        setUser({id:answer.data.id});
+        setUserDetails(details);
+        setUserSubjects(answer.data.subjects);
+        setUserPosts(answer.data.posts);
+        setUserNotifications(answer.data.notifications);
+        // setUserConnected(answer.data);
         handleOpenAlert('success', 'Welcome! and good luck finding a partner');
         setTimeout(() => {
           handleCloseLogIn();

@@ -1,9 +1,10 @@
-const { Op, where, Sequelize } = require('sequelize');
+const { Op,  Sequelize } = require('sequelize');
 const { NewPostAlert } = require('../models/Models');
 
 const addAlert = async (user_id, sub_category, date, time) => {
     try {
-        NewPostAlert.create({ user_id, sub_category, date, time })
+        console.log(user_id);
+        await NewPostAlert.create({ user_id, sub_category, date, time })
         return "Alert added"
     }
     catch (err) {

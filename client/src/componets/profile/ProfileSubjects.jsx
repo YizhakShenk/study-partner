@@ -1,23 +1,28 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import AddSubject from './AddSubject';
-import UserConnected from '../../context/UserConnected';
+import UserContext from '../../context/UserContext';
 import { Box, Button, Divider, Paper, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-const urlServer= process.env.REACT_APP_URL_SERVER
+import UserSubjectsContext from '../../context/UserSubjectsContext';
+const urlServer = process.env.REACT_APP_URL_SERVER
 
 
 export default function ProfileSubjects() {
-   
-    const { userConnected, setUserConnected } = useContext(UserConnected);
-    const [subjects, setSubjects] = useState(userConnected.subjects || null);
-    const [subjectsToRemove,setSubjectsToRemove] = useState([])
+
+    const { userSubjects, setUserSubjects } = useContext(UserSubjectsContext);
+    const { user } = useContext(UserContext);
+    const [subjects, setSubjects] = useState([]);
+    const [subjectsToRemove, setSubjectsToRemove] = useState([])
     const [edit, setEdit] = useState(false);
     const [openAddSubject, setOpenAddSubject] = useState(false);
-    // const [cat, setCat] = useState("");
+
+    useEffect(() => {
+        setSubjects(userSubjects || [])
+    }, [userSubjects]);
 
     const handleEdit = () => {
         setEdit(!edit);
@@ -27,46 +32,30 @@ export default function ProfileSubjects() {
     }
 
     const handleDelete = (id) => {
-        console.log(id);
         const temp = subjectsToRemove;
         temp.push(id);
-        // console.log('temp >>',temp);
         setSubjectsToRemove(temp)
         setSubjects(subjects?.filter(item => item.id !== id));
     }
     const handleCancel = () => {
-        setSubjects(userConnected.subjects || null);
+        setSubjects(userSubjects || null);
         setEdit(false);
     }
 
     const handleSave = () => {
         try {
-            // axios.post(urlServer + "/user/update", { email: userConnected.email, subjects }, { withCredentials: true });
-            axios.post(`${urlServer}/user-subject/remove-user-subject`, { userId:userConnected.id, subjectId:subjectsToRemove}, { withCredentials: true });
-            setUserConnected({
-                id: userConnected.id,
-                name: userConnected.name,
-                email: userConnected.email,
-                password: userConnected.password,
-                country: userConnected.country,
-                languages: userConnected.languages,
-                phone_number: userConnected.phone_number,
-                age: userConnected.age,
-                about: userConnected.about,
-                posts: userConnected.posts,
-                subjects: subjects,
-            })
+            axios.post(`${urlServer}/user-subject/remove-user-subject`, { userId: user.id, subjectId: subjectsToRemove }, { withCredentials: true });
+            setUserSubjects(subjects);
             setEdit(!edit);
         }
         catch (err) {
             console.log(err);
-            alert(err.message);
         }
     }
 
     return (
         <Box>
-            {subjects.length? <Box sx={{ m: 1, display: 'flex', flexWrap: 'wrap' }}>
+            {subjects?.length ? <Box sx={{ m: 1, display: 'flex', flexWrap: 'wrap' }}>
                 {subjects?.map((item, index) => {
                     return <Paper key={index} sx={{ m: 1, display: 'flex', flexDirection: 'row' }}>
                         <Typography align='center' sx={{ m: 1 }}>{item.name} </Typography>
@@ -74,7 +63,7 @@ export default function ProfileSubjects() {
                     </Paper>
                 })}
             </Box>
-            : <Box><Typography variant='h6' m={1}>You had'nt added subject yet.</Typography></Box>}
+                : <Box><Typography variant='h6' m={1}>You had'nt added subject yet.</Typography></Box>}
             <Divider />
             {!openAddSubject ?
                 edit ?
@@ -84,7 +73,7 @@ export default function ProfileSubjects() {
                     </Box>
                     :
                     <Box sx={{ m: 1 }}>
-                        {subjects.length >0 && <Button sx={{ m: 1 }} variant='outlined' onClick={handleEdit} size="large" startIcon={<EditIcon fontSize='small' />}>Edit</Button>}
+                        {subjects?.length > 0 && <Button sx={{ m: 1 }} variant='outlined' onClick={handleEdit} size="large" startIcon={<EditIcon fontSize='small' />}>Edit</Button>}
                         <Button sx={{ m: 1 }} variant='outlined' onClick={handleOpenAddSubject} size="large" startIcon={<AddCircleIcon fontSize='small' />} >Add Subject</Button>
                     </Box>
                 :

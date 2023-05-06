@@ -16,7 +16,6 @@ export default function ExtendPostDialog({ openMore, setOpenMore, post }) {
     const handleClose = () => {
         setOpenMore(false);
         setIsSendingEmail(false)
-        // emailSent === 1 && window.location.reload()
         setEmailSent(0)
     };
 
@@ -40,7 +39,7 @@ export default function ExtendPostDialog({ openMore, setOpenMore, post }) {
                         </IconButton>
                     </DialogTitle>
                 </Box>
-                {!isSendingEmail ? <ExtendedPost handleClose={handleClose} post={post} setIsSendingEmail={setIsSendingEmail} setEmailSent={setEmailSent} setOpenMore={setOpenMore} /> :
+                {!isSendingEmail ? <ExtendedPost post={post} setIsSendingEmail={setIsSendingEmail} setEmailSent={setEmailSent} setOpenMore={setOpenMore} /> :
                     <PostSending handleClose={handleClose} emailSent={emailSent} />}
             </Dialog>
         </Box>

@@ -7,19 +7,10 @@ import {
     Button,
 } from "@mui/material";
 import axios from 'axios';
-import UserConnected from "../../context/UserConnected";
 import UserDetailsContext from '../../context/UserDetailsContext';
 const urlServer = process.env.REACT_APP_URL_SERVER
 
 export default function ProfileDetails() {
-    // const { userConnected} = useContext(UserConnected);
-    // const [name, setName] = useState(userConnected.name);
-    // const [email, setEmail] = useState(userConnected.email);
-    // const [country, setCountry] = useState(userConnected.country);
-    // const [languages, setLanguages] = useState(userConnected.languages);
-    // const [age, setAge] = useState(userConnected.age);
-    // const [phone_number, setPhone_number] = useState(userConnected.phone_number);
-    // const { userConnected} = useContext(UserConnected);
     const { userDetails, setUserDetails } = useContext(UserDetailsContext);
     const [name, setName] = useState(userDetails.name || '');
     const [email, setEmail] = useState(userDetails.email || '');
@@ -61,12 +52,6 @@ export default function ProfileDetails() {
         setLanguages(userDetails.languages || '');
         setAge(userDetails.age || null);
         setPhone_number(userDetails.phone_number || null);
-        // setName(userConnected.name || undefined);
-        // setEmail(userConnected.email || undefined);
-        // setCountry(userConnected.country || undefined);
-        // setLanguages(userConnected.languages || undefined);
-        // setAge(userConnected.age || undefined);
-        // setPhone_number(userConnected.phone_number || undefined);
         setEdit(edit => !edit);
     }
 

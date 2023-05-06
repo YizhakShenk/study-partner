@@ -14,12 +14,15 @@ import Logout from "@mui/icons-material/Logout";
 
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import UserConnected from "../../context/UserConnected";
+import UserContext from "../../context/UserContext";
+import UserDetailsContext from "../../context/UserDetailsContext";
 
 
 export default function AppMenu({ setOpenLogIn }) {
+
   const [anchorUserMenu, setAnchorUserMenu] = useState(null);
-  const { userConnected, setUserConnected } = useContext(UserConnected);
+  const { user ,setUser} = useContext(UserContext);
+  const { userDetails, } = useContext(UserDetailsContext);
 
   const navigae = useNavigate();
 
@@ -50,18 +53,18 @@ export default function AppMenu({ setOpenLogIn }) {
       document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
     })("id");
     sessionStorage.removeItem("user");
-    setUserConnected(null);
+    setUser(null);
   };
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title="open user options">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          {!userConnected ? (
+          {!user ? (
             <Avatar />
           ) : (
             <Avatar>
-              {userConnected.name
-                ? userConnected.name.slice(0, 1).toUpperCase()
+              {userDetails?.name
+                ? userDetails.name.slice(0, 1).toUpperCase()
                 : " "}
             </Avatar>
           )}
@@ -84,7 +87,7 @@ export default function AppMenu({ setOpenLogIn }) {
         open={Boolean(anchorUserMenu)}
         onClose={handleCloseUserMenu}
       >
-        {userConnected ? (
+        {user ? (
           <Box>
             <MenuItem onClick={HandleProfilePage}>
               <ListItemIcon>

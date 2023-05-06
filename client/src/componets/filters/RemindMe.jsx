@@ -1,63 +1,55 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
-import UserConnected from "../../context/UserConnected";
+import UserContext from "../../context/UserContext";
 
 import { Box, Typography, Card, CardContent, Button, CardActions, Alert, } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-const urlServer = process.env.REACT_APP_URL_SERVER
+const urlServer = process.env.REACT_APP_URL_SERVER;
+
+const getStrDay = (date) => {
+  return date ? `${date.$D < 10 ? "0" : ""}${date.$D}/${date.$M + 1 < 10 ? "0" : ""}${date.$M + 1}/${date.$y}` : null
+}
+const getStrTime = (time) => {
+  return time ? `${time.$H < 10 ? "0" : ""}${time.$H}:${time.$m < 10 ? "0" : ""}${time.$m}` : null
+}
+
 
 export default function RemindMe({ subName, date, time, getDateStemp, getTimeStemp, clearFilter }) {
-  const { userConnected } = useContext(UserConnected)
-  const [sstempSubName, setStempSsubName] = useState();
-  const [strDay, setStrDay] = useState();
-  const [strTime, setStrTime] = useState();
+  const { user } = useContext(UserContext);
+
+
+  const [sstempSubName] = useState(subName || null);
+  const [strDay] = useState(getStrDay(date));
+  const [strTime] = useState(getStrTime(time));
+
   const [alertMessage, setAlertMessage] = useState('');
   const [opanAlert, setOpanAlert] = useState(false);
   const [alertMode, setAlertMode] = useState('');
-
-  useEffect(() => {
-    if (subName) {
-      setStempSsubName(subName);
-    }
-    else {
-      setStempSsubName(null);
-    }
-    if (date && !isNaN(date.$D)) {
-      setStrDay(`${date.$D < 10 ? "0" : ""}${date.$D}/${date.$M + 1 < 10 ? "0" : ""}${date.$M + 1}/${date.$y}`);
-    }
-    else {
-      setStrDay(null);
-    }
-    if (time && !isNaN(time.$D)) {
-      setStrTime(`${time.$H < 10 ? "0" : ""}${time.$H}:${time.$m < 10 ? "0" : ""}${time.$m}`);
-    }
-    else {
-      setStrTime(null)
-    }
-  }, [])
-
+  
   const handleOpenAlert = (alertStatus, message) => {
     setAlertMode(alertStatus);
     setAlertMessage(message)
     setOpanAlert(true);
     setTimeout(() => {
       setOpanAlert(false);
-      clearFilter();
     }, 3000)
   }
 
   const remindMe = async () => {
     try {
-      if (!userConnected) {
-        alert("you are not logged in please log in to complete");
+      if (!user) {
+        handleOpenAlert("error", "you are not logged in please log in to complete");
         return;
       }
-      const answer = await axios.post(`${urlServer}/alert/add-alert`, { user_id: userConnected.id || null, sub_category: sstempSubName || null, date: getDateStemp(date) || null, time: getTimeStemp(time) || null })
-      handleOpenAlert("success", answer.data);
+      const answer = await axios.post(`${urlServer}/alert/add-alert`, { user_id: user.id || null, sub_category: sstempSubName || null, date: getDateStemp(date) || null, time: getTimeStemp(time) || null })
+      await handleOpenAlert("success", answer.data);
+      setTimeout(() => {
+        clearFilter();
+      }, 3000)
     }
     catch (err) {
       console.log(err);
-      handleOpenAlert("error", err.response.data);
+      handleOpenAlert("error", err.response.data)
     }
   }
   return (

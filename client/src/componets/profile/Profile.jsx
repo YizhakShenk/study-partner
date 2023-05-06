@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
-import UserConnected from '../../context/UserConnected';
+import UserContext from '../../context/UserContext';
 import ProfileSummary from './ProfileSummary';
 import ProfileDetails from './ProfileDetails';
 import ProfileSubjects from './ProfileSubjects';
@@ -18,11 +18,8 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 export default function Profie() {
   const navigate = useNavigate()
   const [expanded, setExpanded] = useState("1");
-  const { userConnected } = useContext(UserConnected);
+  const { user } = useContext(UserContext);
 
-
-
-  
 
   const handleChange = (panel) => {
     if (expanded === panel) {
@@ -33,7 +30,7 @@ export default function Profie() {
   }
   return (
     <Box>
-      {userConnected ? <Box>
+      {user ? <Box>
         <Accordion expanded={expanded === '1'} onChange={() => { handleChange('1') }}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -51,14 +48,14 @@ export default function Profie() {
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
             aria-controls="panel2a-content"
-            id="panel2a-header"
-          >
+            id="panel2a-header">
             <Typography>About Me</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <ProfileSummary />
           </AccordionDetails>
         </Accordion>
+
         <Accordion expanded={expanded === '3'} onChange={() => { handleChange('3') }}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -71,6 +68,7 @@ export default function Profie() {
             <ProfileSubjects />
           </AccordionDetails>
         </Accordion>
+
         <Accordion expanded={expanded === '4'} onChange={() => { handleChange('4') }}>
           <AccordionSummary
             expandIcon={<ExpandMoreIcon />}
@@ -80,15 +78,15 @@ export default function Profie() {
             <Typography>My Posts</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <ProfilePosts posts={userConnected.posts} />
+            <ProfilePosts />
           </AccordionDetails>
         </Accordion>
       </Box>
-      :
-      <Box sx={{height:'40vh',mt:'20%'}}>
-        <Typography variant='h5'>Please log in then you can see your profile details !</Typography>
-        <Button endIcon={<ArrowForwardIcon/>} onClick={()=>navigate('/')}>Back to home page</Button>
-      </Box>
+        :
+        <Box sx={{ height: '40vh', mt: '20%' }}>
+          <Typography variant='h5'>Please log in then you can see your profile details !</Typography>
+          <Button endIcon={<ArrowForwardIcon />} onClick={() => navigate('/')}>Back to home page</Button>
+        </Box>
       }
     </Box>
 

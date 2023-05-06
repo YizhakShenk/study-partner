@@ -106,9 +106,9 @@ const updateUser = async (reqBody) => {
             country: country || undefined,
             languages: languages || undefined,
             phone_number: phone_number || undefined,
-            about: about || undefined,
             age: age || undefined,
             rate: rate || undefined,
+            about: about || undefined,
         }
         const answer = await UserRepo.updateUser(email || null, id || null, newValues);
         return answer;
