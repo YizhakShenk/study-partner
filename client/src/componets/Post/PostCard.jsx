@@ -89,7 +89,6 @@ export default function PostCard({ post }) {
                 return <CalendarTodayTwoToneIcon key={index} fontSize="small" color={post.days[index] < 1 ? "disabled" : "primary"} />
               })}
             </Box>
-
           </CardContent>
           <CardActions sx={{ display: "flex", justifyContent: 'flex-end' }}>
             <Button
@@ -103,14 +102,10 @@ export default function PostCard({ post }) {
               learn more
             </Button>
           </CardActions>
-
           <ExtendPostDialog
             openMore={openMore}
             setOpenMore={setOpenMore}
             post={post}
-            // setEditPost={setEditPost}
-            
-            
           />
         </Card>
       </Tooltip>

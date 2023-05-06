@@ -25,7 +25,6 @@ export default function Filters({ setPosts, handleRendering }) {
         result.data.forEach((cat) => {
           cat.subjects.forEach((subCat) => {
             newArr.push({
-              // id: subCat.id,
               name: subCat.name,
               category: cat.name,
             });

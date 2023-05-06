@@ -1,6 +1,5 @@
 import './App.css';
 import { useEffect, useState } from 'react';
-import UserConnected from './context/UserConnected';
 import UserContext from './context/UserContext';
 import UserDetailsContext from './context/UserDetailsContext';
 import UserSubjectsContext from './context/UserSubjectsContext';
@@ -20,7 +19,6 @@ function App() {
   const [userSubjects, setUserSubjects] = useState(null);
   const [userPosts, setUserPosts] = useState(null);
   const [userNotifications, setUserNotifications] = useState(null);
-  const [userConnected, setUserConnected] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -28,7 +26,9 @@ function App() {
         const id = sessionStorage.getItem("user_id");
         const auth = await (await axios.post(`${urlServer}/auth/`, { id }, { withCredentials: true })).data
         if (!auth) {
-          setUserConnected(null);
+          setUser(null);
+          setUserDetails(null);
+          setUserNotifications(null);
           sessionStorage.clear()
         }
         else {
@@ -37,23 +37,20 @@ function App() {
             name: auth.name,
             age: auth.age,
             email: auth.email,
-            country: auth.country,
             phone_number: auth.phone_number,
+            country: auth.country,
+            languages: auth.languages,
             about: auth.about,
-            languages: auth.languages
-
-
           }
           const notifications = auth.notifications;
           const subjects = auth.subjects;
           const posts = auth.posts;
-
           setUser(userId);
           setUserDetails(details);
           setUserSubjects(subjects);
           setUserPosts(posts);
           setUserNotifications(notifications);
-          setUserConnected(auth);
+          // setUserConnected(auth);
         }
       }
       catch (err) {
@@ -67,8 +64,7 @@ function App() {
       <CssVarsProvider>
         <CssBaseline>
           {/* <ThemeProvider theme={theme}> */}
-          <UserConnected.Provider value={{ userConnected, setUserConnected }}>
-            <UserContext.Provider value={{ user }}>
+            <UserContext.Provider value={{ user, setUser }}>
               <UserDetailsContext.Provider value={{ userDetails, setUserDetails }}>
                 <UserSubjectsContext.Provider value={{ userSubjects, setUserSubjects }}>
                   <UserPostsContext.Provider value={{ userPosts, setUserPosts }}>
@@ -79,7 +75,6 @@ function App() {
                 </UserSubjectsContext.Provider>
               </UserDetailsContext.Provider>
             </UserContext.Provider>
-          </UserConnected.Provider>
           {/* </ThemeProvider> */}
         </CssBaseline>
       </CssVarsProvider>

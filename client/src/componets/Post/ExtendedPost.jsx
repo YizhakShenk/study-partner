@@ -1,8 +1,11 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import UserConnected from "../../context/UserConnected";
+import UserContext from "../../context/UserContext";
+import UserPostsContext from "../../context/UserPostsContext";
 import PostObjContext from "../../context/PostObjContext";
+import PostsContext from "../../context/PostsContext";
+
 import {
   Paper,
   Popover,
@@ -20,8 +23,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 const urlServer = process.env.REACT_APP_URL_SERVER
 
 export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, setOpenMore }) {
-  const { userConnected } = useContext(UserConnected);
+  const { user } = useContext(UserContext);
+  const { userPosts, setUserPosts } = useContext(UserPostsContext);
   const { setEditPost, setOpenCreatePost } = useContext(PostObjContext)
+  const { posts, setPosts } = useContext(PostsContext)
   const navigae = useNavigate();
   const [week] = useState(["Sun", "Mon", "Tue", "Wen", "Thu", "Fri", "Sat"]);
   const [day, setDay] = useState(-1);
@@ -38,7 +43,6 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, se
         throw new Error("posts not dound");
       }
       setEditPost(postNature);
-      // setOpenDialog(true);
       setOpenCreatePost(true);
     }
     catch (err) {
@@ -49,11 +53,15 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, se
   const handleDeletePost = async () => {
     try {
       await axios.post(`${urlServer}/post/delete`, { id: post.id }, { withCredentials: true });
-      window.location.reload();
-      //need alert if succeed or faild
+      const tempuserPost = userPosts?.filter((item) => item.id !== post.id);
+      setUserPosts(tempuserPost);
+      setPosts(posts?.filter((item) => item.id !== post.id)||null);
+      setOpenAnchorEl(false);
+      setOpenMore(false);
     }
     catch (err) {
       console.log(err);
+      alert("error  with deleting");///////need to take care of alerts
     }
 
   }
@@ -71,7 +79,7 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, se
       setIsSendingEmail(true);
       const answer = await axios.post(
         urlServer + "/activity/react-to-post",
-        { the_applicant_id: userConnected.id, postId: post.id, day: day },
+        { the_applicant_id: user?.id, postId: post.id, day: day },
         { withCredentials: true }
       );
       if (!answer.data) {
@@ -126,7 +134,7 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, se
         </Grid>
         {post.post && <Box sx={{ p: 1 }}><Paper><Typography p={1} gutterBottom variant="body1" >{post.post}</Typography></Paper></Box>}
         <DialogActions sx={{ pt: 2, pb: 2 }}>
-          {userConnected && (userConnected.id === post.user_id) &&
+          {(user?.id === post.user_id) &&
             <Box>
               <Tooltip title="Delete Post"><Button onClick={handleDeletePostButton}><DeleteIcon /></Button></Tooltip>
               <Popover
@@ -144,10 +152,10 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, se
               </Popover>
             </Box>
           }
-          {userConnected && (userConnected.id === post.user_id) && <Tooltip title="Edit Post"><Button onClick={handleEdit}><EditIcon /></Button></Tooltip>}
+          {(user?.id === post.user_id) && <Tooltip title="Edit Post"><Button onClick={handleEdit}><EditIcon /></Button></Tooltip>}
           <Button
             onClick={() => {
-              userConnected && (userConnected.id === post.user_id) ?
+              user?.id === post.user_id ?
                 navigae("/profile")
                 : navigae("/user", { state: { userId: post.user_id } })
             }}
@@ -156,8 +164,8 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, se
           >
             View profile
           </Button>
-          {userConnected ? (
-            (userConnected.id !== post.user_id) && <Button
+          {user ? (
+            (user?.id !== post.user_id) && <Button
               onClick={handleBeMyPartner}
               disabled={day === -1}
               variant="outlined"

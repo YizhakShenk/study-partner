@@ -1,3 +1,7 @@
+import React, { useState, useContext } from "react";
+import UserContext from "../../context/UserContext";
+import NotificationsContext from "../../context/NotificationsContext";
+import Notification from "../notifications/Notification";
 import {
   Box,
   IconButton,
@@ -7,11 +11,11 @@ import {
   Typography,
 } from "@mui/material";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import React, { useState, useContext } from "react";
-import UserConnected from "../../context/UserConnected";
-import Notification from "../notifications/Notification";
+
 export default function AppNotifications() {
-  const { userConnected, setUserConnected } = useContext(UserConnected);
+
+  const { user } = useContext(UserContext);
+  const { userNotifications } = useContext(NotificationsContext);
 
   const [expanded, setExpanded] = useState("");
   const [anchorUserNotf, setAnchorUserNotf] = useState(null);
@@ -22,13 +26,13 @@ export default function AppNotifications() {
   const handleCloseUserNotf = () => {
     setAnchorUserNotf(null);
   };
-  
+
   const countNotificates = () => {
     let count = 0;
-    if (userConnected.notifications.length < 1) {
+    if (userNotifications?.length < 1) {
       return null;
     }
-    userConnected.notifications?.forEach((item) => {
+    userNotifications?.forEach((item) => {
       if (item.has_readed === false) {
         count++;
       }
@@ -45,7 +49,7 @@ export default function AppNotifications() {
   };
   return (
     <Box>
-      {userConnected && (
+      {user && (
         <IconButton color="inherit" onClick={handleOpenUserNotf}>
           <Badge badgeContent={countNotificates()} color="error">
             <NotificationsIcon />
@@ -67,8 +71,8 @@ export default function AppNotifications() {
         open={Boolean(anchorUserNotf)}
         onClose={handleCloseUserNotf}
       >
-        {userConnected && userConnected.notifications.length > 0 ? (
-          userConnected.notifications.map((notification, index) => {
+        {userNotifications?.length > 0 ? (
+          userNotifications.map((notification, index) => {
             return (
               <Notification
                 notification={notification}

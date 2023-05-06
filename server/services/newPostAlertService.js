@@ -7,6 +7,7 @@ const { transferMail } = require('../utilities/mailer/mailer');
 const addAlert = async (req) => {
     try {
         const { user_id, sub_category, date, time } = req.body;
+        console.log('userid >>' ,user_id);
         if (!sub_category && !date && !time) {
             throw new Error("Please fill at least one parameter");
         }

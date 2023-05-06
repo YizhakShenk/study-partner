@@ -1,3 +1,8 @@
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import AppMenu from "./AppMenu";
+import AppNotifications from "./AppNotifications";
+import UserContext from "../../context/UserContext";
 import {
   AppBar,
   Box,
@@ -11,10 +16,11 @@ import {
 import { useColorScheme } from "@mui/material/styles";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
-import { useNavigate } from "react-router-dom";
-import AppMenu from "./AppMenu";
-import AppNotifications from "./AppNotifications";
+
 export default function Nav({ setOpenLogIn }) {
+
+
+  const { user } = useContext(UserContext)
   const navigae = useNavigate();
   const { mode, setMode } = useColorScheme();
   const modeToggle = () => {
@@ -35,8 +41,7 @@ export default function Nav({ setOpenLogIn }) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {/* Study Partner */}
           </Typography>
-
-          <AppNotifications></AppNotifications>
+          {user && <AppNotifications></AppNotifications>}
           <IconButton sx={{ margin: 2 }} onClick={modeToggle} color="inherit">
             {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>

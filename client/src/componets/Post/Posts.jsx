@@ -1,28 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import PostCard from "./PostCard";
 import Filters from "../filters/Filters";
+import PostsContext from "../../context/PostsContext";
 import {
   Box,
   Grid,
   CircularProgress,
   Typography,
-
 } from "@mui/material";
-const urlServer= process.env.REACT_APP_URL_SERVER
+const urlServer = process.env.REACT_APP_URL_SERVER
 
 export default function Posts() {
-  const [posts, setPosts] = useState(null);
-  // const [postsTemp,setPostsTemp] = useState(null);
   const [rendering, setRendering] = useState(false);
+  const { posts, setPosts } = useContext(PostsContext)
 
   const handleRendering = () => {
     setRendering(!rendering);
   };
-  // const handleClear = () => {
-  //   setPosts(postsTemp)
-  // };
-
 
   useEffect(() => {
     (async () => {
@@ -35,28 +30,25 @@ export default function Posts() {
           throw new Error("posts not dound");
         } else {
           setPosts(postsList);
-          setPosts(postsList);
         }
       } catch (err) {
         console.log(err);
       }
     })();
-  }, [ rendering]);
+  }, [rendering, setPosts]);
 
   return (
     <Box alignItems="center">
       {posts ? (
         <Box>
-          {/* <Box sx={{ display: "flex", justifyContent: "center" }}> */}
-            <Filters setPosts={setPosts} handleRendering={handleRendering} />
-          {/* </Box> */}
+          <Filters setPosts={setPosts} handleRendering={handleRendering} />
           <Grid container sx={{ placeContent: "center" }} spacing={1}>
-            {posts && posts.length ? (
+            { posts?.length ? (
               posts.map((post, index) => {
                 return (
-                  <Grid item key={index}>
-                    <PostCard post={post} />
-                  </Grid>
+                    <Grid item key={index}>
+                      <PostCard post={post} />
+                    </Grid>
                 );
               })
             ) : (

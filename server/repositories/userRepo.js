@@ -84,6 +84,7 @@ const updateUser = async (email, id, updatedValues) => {
     }
 
 }
+
 const deleteUser = async (email) => {
     try {
         const answer = await UserModel.destroy({ where: { email } });

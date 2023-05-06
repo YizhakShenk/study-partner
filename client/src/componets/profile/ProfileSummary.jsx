@@ -3,12 +3,14 @@ import { Box,Button, InputBase} from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import axios from 'axios';
-import UserConnected from '../../context/UserConnected';
+import UserDetailsContext from '../../context/UserDetailsContext';
 const urlServer= process.env.REACT_APP_URL_SERVER
 
 export default function ProfileSummary() {
-  const { userConnected } = useContext(UserConnected);
-  const [val, setVal] = useState(userConnected.about || "");
+  const { userDetails, setUserDetails } = useContext(UserDetailsContext);
+  
+
+  const [about, setAbout] = useState(userDetails.about || "");
   const [edited, setEdited] = useState(true);
 
   const handleEdit = () => {
@@ -17,7 +19,16 @@ export default function ProfileSummary() {
 
   const handleSave = async() => {
     try{
-      axios.post(urlServer+'/user/update', { email: userConnected.email, about: val }, { withCredentials: true });  
+      await axios.put(`${urlServer}/user/update`, { email: userDetails.email, about: about }, { withCredentials: true });  
+      setUserDetails({
+          name: userDetails.name,
+          age: userDetails.age,
+          email: userDetails.email,
+          country: userDetails.country,
+          phone_number: userDetails.phone_number,
+          languages: userDetails.languages,
+          about: about,
+      });
     }
     catch(err){
     console.log(err);
@@ -26,7 +37,7 @@ export default function ProfileSummary() {
   }
 
   const handleCancel = () => {
-    setVal(userConnected.about || " ");
+    setAbout(userDetails.about || " ");
     setEdited(!edited);
   }
   return (
@@ -39,10 +50,10 @@ export default function ProfileSummary() {
         sx={{ m: 1 }}
         multiline
         rows={4}
-        fullWidth
-        value={val || ""}
+        fullWidth 
+        value={about || ""}
         placeholder="Write your words here..  for exapmle: 'Hi, I'm lee and I am a student of Languages and would like to practice grammar and speaking. my Calender is forward...'  (:"
-        onChange={(event) => { setVal(event.target.value) }}
+        onChange={(event) => { setAbout(event.target.value) }}
       />
       {edited ? <Button sx={{ m: 1 }} onClick={handleEdit} variant="text" size="large" startIcon={<EditIcon />}>Edit</Button>
         : <Button sx={{ m: 1 }} onClick={handleSave} variant="contained" size="large" startIcon={< SaveIcon />}>Save</Button>}
