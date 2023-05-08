@@ -1,17 +1,17 @@
 import React, { useState, useContext } from "react";
 import axios from "axios";
 import UserContext from "../../context/UserContext";
-
+import {getStrDay,getStrTime} from '../../utilities/functions/dateTypeFunc'
 import { Box, Typography, Card, CardContent, Button, CardActions, Alert, } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 const urlServer = process.env.REACT_APP_URL_SERVER;
 
-const getStrDay = (date) => {
-  return date ? `${date.$D < 10 ? "0" : ""}${date.$D}/${date.$M + 1 < 10 ? "0" : ""}${date.$M + 1}/${date.$y}` : null
-}
-const getStrTime = (time) => {
-  return time ? `${time.$H < 10 ? "0" : ""}${time.$H}:${time.$m < 10 ? "0" : ""}${time.$m}` : null
-}
+// const getStrDay = (date) => {
+//   return date ? `${date.$D < 10 ? "0" : ""}${date.$D}/${date.$M + 1 < 10 ? "0" : ""}${date.$M + 1}/${date.$y}` : null
+// }
+// const getStrTime = (time) => {
+//   return time ? `${time.$H < 10 ? "0" : ""}${time.$H}:${time.$m < 10 ? "0" : ""}${time.$m}` : null
+// }
 
 
 export default function RemindMe({ subName, date, time, getDateStemp, getTimeStemp, clearFilter }) {

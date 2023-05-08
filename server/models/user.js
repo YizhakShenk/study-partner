@@ -1,6 +1,7 @@
 const db = require('../db/mysql');
 const { DataTypes } = require('sequelize');
 
+const RateModel= require('./Rate');
 const SubjectModel = require('./Subject');
 const UserSubjects = require('./UserSubject');
 const PostModel = require('./Post');
@@ -80,6 +81,8 @@ User.hasMany(PostModel, { foreignKey: "user_id" });
 PostModel.belongsTo(User, { foreignKey: "user_id" });
 User.hasMany(NotificationModel,{foreignKey:"user_id"});
 NotificationModel.belongsTo(User,{foreignKey:"user_id"});
+User.hasMany(RateModel,{foreignKey:"user_id"});
+RateModel.belongsTo(User,{foreignKey:"user_id"});
 User.belongsToMany(SubjectModel, { through: UserSubjects, foreignKey: "UserId" });
 SubjectModel.belongsToMany(User, { through: UserSubjects, foreignKey: "SubjectId" });
 

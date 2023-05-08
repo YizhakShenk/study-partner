@@ -3,12 +3,11 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import axios from 'axios';
 import UserPosts from './UserPosts';
+import UserRates from './UserRates';
 import UserContext from '../../context/UserContext';
 
 import {
   Paper,
-  Button,
-  Rating,
   Box,
   Typography,
   CircularProgress,
@@ -23,8 +22,8 @@ export default function UserProfile() {
     state: { userId },
   } = useLocation();
   const [userData, setUserData] = useState();
-  const [rate, setRate] = useState(null);
-  const [isRating, setIsRating] = useState(false);
+  const [rates, setRates] = useState([]);
+  // const [isRating, setIsRating] = useState(false);
   const { user } = useContext(UserContext);
 
   useEffect(() => {
@@ -34,28 +33,27 @@ export default function UserProfile() {
           id: userId,
         });
         setUserData(answer.data);
-        setRate(answer.data.rate);
+        // setRates(answer.data.rates);
       } catch (err) {
         console.log(err);
       }
     })()
   }, [userId])
 
-  const handleRate = async (newValue) => {
-    console.log("newVal >>", newValue);
-    const newRate = await axios.put(
-      urlServer + "/activity/rate-user",
-      { email: userData.email, rate: newValue },
-      { withCredentials: true }
-    );
+  // const handleRate = async (newValue) => {
+  //   const newRate = await axios.put(
+  //     urlServer + "/activity/rate-user",
+  //     { email: userData.email, rate: newValue },
+  //     { withCredentials: true }
+  //   );
 
-    setRate(newRate.data);
-    setIsRating((rating) => !rating);
-  };
+  //   setRate(newRate.data);
+  //   setIsRating((rating) => !rating);
+  // };
 
-  const handleCancelRate = () => {
-    setIsRating((rating) => !rating);
-  };
+  // const handleCancelRate = () => {
+  //   setIsRating((rating) => !rating);
+  // };
   return (
     <Box>
       {userData ? (
@@ -63,7 +61,8 @@ export default function UserProfile() {
           <Box sx={{ flexGrow: 1 }}>
             <Grid container minHeight={300}>
               <Grid item xs={12} sm={12} md={3}>
-                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <UserRates user={user} userData={userData} rates={rates} />
+                {/* <Box sx= {{ display: "flex", justifyContent: "center" }}>
                   <Avatar sx={{ width: 100, height: 100, marginTop: 5 }} />
                 </Box>
                 <Box sx={{ m: 5 }}>
@@ -88,7 +87,7 @@ export default function UserProfile() {
                       )}
                     </Box>
                   )}
-                </Box>
+                </Box> */}
               </Grid>
 
               <Grid
