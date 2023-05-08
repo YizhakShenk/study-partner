@@ -2,13 +2,13 @@ const { Op } = require('sequelize');
 const Models = require('../models/Models');
 
 
-const addRate = async (user_id, rater_id, note, rate_score) => {
+const addRate = async (user_id,rater_name ,rater_id, note, rate_score) => {
     try {
         // const user = await Models.UserModel.findOne({ where: { rater_id, user_id, note } });
         // if (!user) {
         //     throw new Error("user does not exist");
         // }
-        await Models.RateModel.create({ user_id, rater_id, note, rate_score });
+        await Models.RateModel.create({ user_id,rater_name , rater_id, note, rate_score });
         return "rate added";
     }
     catch (err) {

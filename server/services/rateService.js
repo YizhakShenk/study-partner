@@ -3,7 +3,7 @@ const Models = require('../models/Models');
 const rateRepo = require('../repositories/rateRepo');
 
 const addRate = async (req) => {
-    const { user_id, rater_id, note, rate_score } = req.body;
+    const { user_id,rater_name, rater_id, note, rate_score } = req.body;
     try {
         let answer;
         const tempRate = await rateRepo.getExistRate(user_id ,rater_id);
@@ -11,10 +11,10 @@ const addRate = async (req) => {
             throw new Error(tempRate.message)
         }
         if (!tempRate ) {
-            answer = await rateRepo.addRate(user_id, rater_id, note, rate_score);
+            answer = await rateRepo.addRate(user_id,rater_name ,rater_id, note, rate_score);
         }
         else {
-            answer = await rateRepo.updateRate(user_id, rater_id, note, rate_score);
+            answer = await rateRepo.updateRate(user_id ,rater_id, note, rate_score);
         }
         return answer;
     }

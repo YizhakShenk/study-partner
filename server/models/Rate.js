@@ -12,6 +12,10 @@ const Rate = db.define('rate', {
         type: DataTypes.INTEGER,
         allowNull: true,
     },
+    rater_name: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
     rater_id: {
         type: DataTypes.INTEGER,
         allowNull: false
