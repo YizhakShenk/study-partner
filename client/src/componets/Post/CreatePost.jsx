@@ -2,8 +2,9 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import UserContext from "../../context/UserContext";
 import UserDetailsContext from "../../context/UserDetailsContext";
-// import PostsContext from "../../context/PostsContext";
+import PostsContext from "../../context/PostsContext";
 import { daysDistance, weekIsEmpty, getOptionalsDays } from '../../utilities/validetion/validateDate';
+import { getStrDay, getStrTime } from '../../utilities/functions/dateTypeFunc'
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -28,7 +29,7 @@ const tempDate = dayjs(new Date().setHours(0, 0, 0, 0));
 export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
   const { user } = useContext(UserContext);
   const { userDetails } = useContext(UserDetailsContext);
-  // const { posts, setPosts } = useContext(PostsContext);
+  const { posts, setPosts } = useContext(PostsContext);
   const [alertMessage, setAlertMessage] = useState('')
   const [opanAlert, setOpanAlert] = useState(false);
   const [alertMode, setAlertMode] = useState('')
@@ -109,26 +110,41 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         userId: editPost ? null : user.id || null,
         auther_name: userDetails.name || null,
         post: comment || '',
-        category: inputCategory,
-        sub_category: inputSubCategory,
+        category: editPost ? editPost.category : inputCategory || null,
+        sub_category: inputSubCategory || null,
         date_from: dFrom,
         date_to: dTo,
         time_from: tFrom,
         time_to: tTo,
         days: days || null
       }
-
+      const viewPost = {
+        id: post.id,
+        userId: post.userId,
+        auther_name: post.auther_name || null,
+        post: post.post || ' ',
+        category: post.category || null,
+        sub_category: post.sub_category || null,
+        date_from: getStrDay(dateFrom) || null,
+        date_to: getStrDay(dateTo) || null,
+        time_from: getStrTime(timeFrom) || null,
+        time_to: getStrTime(timeTo) || null,
+        days: days || null
+      }
+      console.log(post);
       if (!editPost) {
         await axios.post(`${urlServer}/post/add`, post);
+        setPosts([viewPost, ...posts]);
       }
       else {
         await axios.put(`${urlServer}/post/update`, post);
+        setPosts(posts?.map((item) => item.id !== post.id ? item : viewPost));
       }
       setLoading(false);
       handleOpenAlert("success", "post published");
       setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+        setOpen(false);
+      }, 2000);
     } catch (err) {
       setLoading(false);
       handleOpenAlert("error", err.response.data);

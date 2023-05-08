@@ -55,7 +55,7 @@ const getAllUsers = async () => {
                     phone_number: answer.phone_number,
                     age: answer.age,
                     about: answer.about || null,
-                    rate: rate || null,
+                    rate: rate || [],
                 }
             })
             return result
@@ -83,9 +83,10 @@ const getOneUser = async (reqBody) => {
                 age: answer.age,
                 about: answer.about || null,
                 rate: answer.rate || null,
-                posts: (answer.posts && answer.posts.map((post) => { return convertToReadingPossibility(post) })) || null,
-                subjects: answer.subjects || null,
-                notifications:answer.notifications || null,
+                posts: (answer.posts && answer.posts.map((post) => { return convertToReadingPossibility(post) })) || [],
+                subjects: answer.subjects || [],
+                notifications:answer.notifications || [],
+                rates:answer.rates || [],
             }
         }
         return answer;

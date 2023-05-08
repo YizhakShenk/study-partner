@@ -3,17 +3,16 @@ import React, { useState, useEffect, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import axios from 'axios';
 import UserPosts from './UserPosts';
+import Rate from './Rate';
+import UserRates from './UserRates';
 import UserContext from '../../context/UserContext';
 
 import {
   Paper,
-  Button,
-  Rating,
   Box,
   Typography,
   CircularProgress,
   Grid,
-  Avatar,
   Divider,
 } from "@mui/material";
 const urlServer= process.env.REACT_APP_URL_SERVER
@@ -23,8 +22,6 @@ export default function UserProfile() {
     state: { userId },
   } = useLocation();
   const [userData, setUserData] = useState();
-  const [rate, setRate] = useState(null);
-  const [isRating, setIsRating] = useState(false);
   const { user } = useContext(UserContext);
 
   useEffect(() => {
@@ -34,28 +31,11 @@ export default function UserProfile() {
           id: userId,
         });
         setUserData(answer.data);
-        setRate(answer.data.rate);
       } catch (err) {
         console.log(err);
       }
     })()
   }, [userId])
-
-  const handleRate = async (newValue) => {
-    console.log("newVal >>", newValue);
-    const newRate = await axios.put(
-      urlServer + "/activity/rate-user",
-      { email: userData.email, rate: newValue },
-      { withCredentials: true }
-    );
-
-    setRate(newRate.data);
-    setIsRating((rating) => !rating);
-  };
-
-  const handleCancelRate = () => {
-    setIsRating((rating) => !rating);
-  };
   return (
     <Box>
       {userData ? (
@@ -63,34 +43,8 @@ export default function UserProfile() {
           <Box sx={{ flexGrow: 1 }}>
             <Grid container minHeight={300}>
               <Grid item xs={12} sm={12} md={3}>
-                <Box sx={{ display: "flex", justifyContent: "center" }}>
-                  <Avatar sx={{ width: 100, height: 100, marginTop: 5 }} />
-                </Box>
-                <Box sx={{ m: 5 }}>
-                  <Rating
-                    precision={0.5}
-                    disabled={!isRating}
-                    value={rate || null}
-                    onChange={(event, newValue) => {
-                      handleRate(newValue);
-                    }}
-                  />
-                  {user && (
-                    <Box>
-                      {!isRating ? (
-                        <Button
-                          onClick={() => setIsRating((rating) => !rating)}
-                        >
-                          Rate
-                        </Button>
-                      ) : (
-                        <Button onClick={handleCancelRate}>Cancel</Button>
-                      )}
-                    </Box>
-                  )}
-                </Box>
+                <Rate user={user} userData={userData} setUserData={setUserData} />
               </Grid>
-
               <Grid
                 item
                 sx={{
@@ -214,6 +168,8 @@ export default function UserProfile() {
           </Box>
           <Divider />
           <Box>{userData.posts && <UserPosts posts={userData.posts} />}</Box>
+          <Divider />
+          <Box>{userData.posts && <UserRates  rates={userData.rates}/>}</Box>
         </Box>
       ) : (
         <Box sx={{ marginTop: "20%" }}>

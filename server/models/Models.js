@@ -1,4 +1,5 @@
 
+const RateModel = require('./Rate');
 const PostModel = require('./Post');
 const CategoryModel = require('./Category');
 const SubjectModel = require('./Subject');
@@ -16,4 +17,5 @@ module.exports = {
     UserModel,
     NotificationModel,
     NewPostAlert,
+    RateModel,
 }
