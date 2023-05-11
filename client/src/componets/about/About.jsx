@@ -20,9 +20,9 @@ export default function About() {
           This website was founded by Avi Rosenthaler and Yitzhak Shenk as a
           final project in software engineering On behalf of mivchar college
         </Typography>
-        <Typography variant="h5">
-          The project was built inspired by Shlomi Levinstein
-        </Typography>
+//         <Typography variant="h5">
+//           The project was built inspired by Shlomi Levinstein
+//         </Typography>
       </Box>
     </div>
   );
