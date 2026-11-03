@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS);
 const jwt = require('jsonwebtoken');
 const AuthRepo = require('../repositories/authRepo');

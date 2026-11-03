@@ -1,5 +1,5 @@
 const UserRepo = require('../repositories/userRepo');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const BCRYPT_ROUNDS = parseInt(process.env.BCRYPT_ROUNDS);
 const { nameValid, emailValid, passwordValid, countryValid, languagesValid, phone_numberValid, age_rangeValid: ageValid } = require('../utilities/validations/validations');
 const {convertToReadingPossibility} = require('../utilities/post/adjustungPostData');
