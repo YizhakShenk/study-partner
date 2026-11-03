@@ -127,7 +127,7 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, se
             <Avatar
               variant="rounded"
               alt="Remy Sharp"
-              src={require('./cardPics/' + post.category + '.jpg')}
+              src={require('./cardPics/' + post.category.toLowerCase() + '.jpg')}
               sx={{ width: 200, height: 200, borderRadius: '50%' }}
             />
           </Grid>
