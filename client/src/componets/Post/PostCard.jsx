@@ -69,7 +69,7 @@ export default function PostCard({ post }) {
             component="img"
             alt="languages"
             height="140"
-            image={require("./cardPics/" + post.category + ".jpg")}
+            image={require("./cardPics/" + post.category.toLowerCase() + ".jpg")}
           />
           <CardContent>
             <Typography variant="h6" color="text.secondary">
