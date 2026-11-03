@@ -64,12 +64,6 @@ const User = db.define('user', {
     }
 },
     {
-        indexes: [
-            {
-                unique: true,
-                fields: ["email"]
-            }
-        ],
         timestamps: false
     });
 
