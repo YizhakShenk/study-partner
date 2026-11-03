@@ -41,16 +41,16 @@ const convertToReadingPossibility = (post) => {
         time_from: Tfrom,
         time_to: Tto,
         matched: post   .matched,
-        days: JSON.parse(post.days)
+        days: post.days
     }
 }
 
 module.exports = { convertToReadingPossibility }
 
 
-let ti = 0012
-let str = `${parseInt(ti / 100)}:${parseInt(ti % 100)}`
-console.log(str);
+// let ti = 0012
+// let str = `${parseInt(ti / 100)}:${parseInt(ti % 100)}`
+// console.log(str);
 
 
 
