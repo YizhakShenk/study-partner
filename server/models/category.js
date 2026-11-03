@@ -1,6 +1,6 @@
 const db = require('../db/mysql');
 const { DataTypes, sequalzie } = require('sequelize');
-const SubjectModel = require('./Subject');
+const SubjectModel = require('./subject');
 const Category = db.define('category', {
     id: {
         type: DataTypes.INTEGER,

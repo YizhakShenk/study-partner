@@ -2,7 +2,7 @@ const db = require('../db/mysql');
 const { DataTypes } = require('sequelize');
 
 const RateModel= require('./Rate');
-const SubjectModel = require('./Subject');
+const SubjectModel = require('./subject');
 const UserSubjects = require('./UserSubject');
 const PostModel = require('./Post');
 const NotificationModel = require('./Notifications')

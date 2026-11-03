@@ -1,6 +1,6 @@
 const db = require('../db/mysql');
 const { DataTypes } = require('sequelize');
-const CategoryModel = require('./Category');
+const CategoryModel = require('./category');
 const { SubjectModel } = require('./Models');
 
 const Subject = db.define('subject', {
