@@ -2,8 +2,8 @@ const testRouter = require('express').Router();
 const { fillTable } = require('./fillTables')
 
 const PostModel = require('../models/Post');
-const UserModel = require('../models/User');
-const SubjectModel = require('../models/Subject');
+const UserModel = require('../models/user');
+const SubjectModel = require('../models/subject');
 const CategoryModel = require('../models/category');
 
 testRouter.get('/test/fill-tables', async(req, res) => {
