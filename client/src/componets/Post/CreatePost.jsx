@@ -56,8 +56,13 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         const result = await axios.get(`${urlServer}/category/get-all`);
         setOption(result.data);
         if (editPost) {
-          const subArray = result.data?.find((item) => item.name === editPost.category);
-          const sub = subArray.subjects?.map((item) => item.name)
+          const subArray = result.data?.find(
+    (item) => item.name === editPost.category
+);
+
+const sub = subArray?.subjects?.map((item) => item.name) || [];
+
+setOptionSub(sub);
           setOptionSub(sub)
           setComment(editPost.post)
           setDateFrom(dayjs(editPost.date_from))
@@ -111,7 +116,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         auther_name: userDetails.name || null,
         post: comment || '',
         category: editPost ? editPost.category : inputCategory || null,
-        sub_category: inputSubCategory || null,
+        sub_category: valueSubCategory || inputSubCategory || editPost?.sub_category || null,
         date_from: dFrom,
         date_to: dTo,
         time_from: tFrom,
