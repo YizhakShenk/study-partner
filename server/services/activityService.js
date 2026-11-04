@@ -22,7 +22,9 @@ const reactToPost = async (req) => {
     if (!post) {
       throw new Error("post not found");
     }
-    const days = JSON.parse(post.days);
+    const days = Array.isArray(post.days)
+  ? post.days
+  : JSON.parse(post.days || "[]");
     if (days[day] === 0) {
       throw new Error("The day already taken or not able to study");
     }

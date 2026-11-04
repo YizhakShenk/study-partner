@@ -62,14 +62,28 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
 
 const sub = subArray?.subjects?.map((item) => item.name) || [];
 
-setOptionSub(sub);
+
           setOptionSub(sub)
           setComment(editPost.post)
           setDateFrom(dayjs(editPost.date_from))
           setDateTo(dayjs(editPost.date_to))
           setTimeFrom(dayjs(new Date().setHours(parseInt(editPost.time_from / 100), parseInt(editPost.time_from % 100), 0, 0)))
           setTimeTo(dayjs(new Date().setHours(parseInt(editPost.time_to / 100), parseInt(editPost.time_to % 100), 0, 0)))
-          setDays(editPost.days)
+          let editDays = editPost.days;
+
+if (typeof editDays === "string") {
+    try {
+        editDays = JSON.parse(editDays);
+    } catch (err) {
+        editDays = null;
+    }
+}
+
+setDays(
+    Array.isArray(editDays) && editDays.length === 7
+        ? editDays
+        : [-1, -1, -1, -1, -1, -1, -1]
+);
         }
       } catch (err) {
         console.log(err);
@@ -266,23 +280,26 @@ setOptionSub(sub);
                   </Box>
                 </LocalizationProvider>
                 <Box sx={{ width: '100%', m: 1 }}>
-                  {week?.map((item, index) => {
-                    return <Button
-                      disabled={days[index] < 0}
-                      key={index}
-                      variant={days[index] !== 0 ? "contained" : "outlined"}
-                      size="small"
-                      sx={{ m: 0.4, width: '13%', }}
-                      onClick={() => {
-                        let temp = days;
-                        temp[index] = 0 + 1 - temp[index]
-                        setRendering(!rendering) //dont delete. it needed to render component
-                        setDays(temp);
-                      }}
-                    >
-                      {item}</Button>
-                  })}
-                </Box>
+  {week?.map((item, index) => {
+    return (
+      <Button
+        disabled={days[index] < 0}
+        key={index}
+        variant={days[index] !== 0 ? "contained" : "outlined"}
+        size="small"
+        sx={{ m: 0.4, width: '13%' }}
+        onClick={() => {
+          const temp = [...days];
+          temp[index] = 1 - temp[index];
+
+          setDays(temp);
+        }}
+      >
+        {item}
+      </Button>
+    );
+  })}
+</Box>
                 <Box sx={{ width: '100%', m: 1 }}>
                   <TextField
                     value={comment}
