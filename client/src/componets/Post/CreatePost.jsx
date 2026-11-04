@@ -182,7 +182,7 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
         days: days || null
       }
       const viewPost = {
-        id: post.id,
+        user_id: editPost?.user_id || editPost?.userId || user.id,
         userId: post.userId,
         auther_name: post.auther_name || null,
         post: post.post || ' ',

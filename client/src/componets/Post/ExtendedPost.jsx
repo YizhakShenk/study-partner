@@ -50,7 +50,11 @@ const handleEdit = async () => {
 
     console.log("POST TO EDIT:", postNature);
 
-    setEditPost(postNature);
+    setEditPost({
+  ...post,
+  ...postNature,
+  userId: post.userId || post.user_id || user.id
+});
     setOpenCreatePost(true);
 
   } catch (err) {
@@ -142,7 +146,7 @@ const handleEdit = async () => {
         </Grid>
         {post.post && <Box sx={{ p: 1 }}><Paper><Typography p={1} gutterBottom variant="body1" >{post.post}</Typography></Paper></Box>}
         <DialogActions sx={{ pt: 2, pb: 2 }}>
-          {(user?.id === post.user_id) &&
+          {(String(user?.id) === String(post.user_id ?? post.userId)) &&
             <Box>
               <Tooltip title="Delete Post"><Button onClick={handleDeletePostButton}><DeleteIcon /></Button></Tooltip>
               <Popover
@@ -160,10 +164,10 @@ const handleEdit = async () => {
               </Popover>
             </Box>
           }
-          {(user?.id === post.user_id) && <Tooltip title="Edit Post"><Button onClick={handleEdit}><EditIcon /></Button></Tooltip>}
+          {(String(user?.id) === String(post.user_id ?? post.userId)) && <Tooltip title="Edit Post"><Button onClick={handleEdit}><EditIcon /></Button></Tooltip>}
           <Button
             onClick={() => {
-              user?.id === post.user_id ?
+              String(user?.id) === String(post.user_id ?? post.userId) ?
                 navigae("/profile")
                 : navigae("/user", { state: { userId: post.user_id } })
             }}
@@ -173,7 +177,7 @@ const handleEdit = async () => {
             View profile
           </Button>
           {user ? (
-            (user?.id !== post.user_id) && <Button
+            (String(user?.id) !== String(post.user_id ?? post.userId)) && <Button
               onClick={handleBeMyPartner}
               disabled={day === -1}
               variant="outlined"
