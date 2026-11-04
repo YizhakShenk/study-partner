@@ -35,6 +35,8 @@ const auth = async (req, res) => {
 
 
 const forgetPassword = async (req, res) => {
+    console.log('FORGET PASSWORD CONTROLLER CALLED');
+    console.log('EMAIL RECEIVED:', req.body.email);
     try {
         const answer = await AuthService.forgetPassword(req.body);
         if(answer === undefined ||  answer.message !== undefined){
