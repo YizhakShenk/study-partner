@@ -50,7 +50,9 @@ const getNeturePost = async (req) => {
             category: result.category,
             date_from: result.date_from,
             date_to: result.date_to,
-            days: JSON.parse(result.days),
+            days: Array.isArray(result.days)
+            ? result.days
+            : JSON.parse(result.days || "[]"),
             id: result.id,
             post: result.post,
             sub_category: result.sub_category,
