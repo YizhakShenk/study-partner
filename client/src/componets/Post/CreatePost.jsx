@@ -51,44 +51,88 @@ export default function CreatePost({ open, setOpen, editPost, setEditPost }) {
   const [rendering, setRendering] = useState(true);
 
   useEffect(() => {
-    (async () => {
+    const loadData = async () => {
       try {
         const result = await axios.get(`${urlServer}/category/get-all`);
         setOption(result.data);
+
         if (editPost) {
           const subArray = result.data?.find(
-    (item) => item.name === editPost.category
-);
+            (item) => item.name === editPost.category
+          );
 
-const sub = subArray?.subjects?.map((item) => item.name) || [];
+          const sub = subArray?.subjects?.map(
+            (item) => item.name
+          ) || [];
 
+          setValueCategory(editPost.category || "");
+          setValueSubCategory(editPost.sub_category || "");
 
-          setOptionSub(sub)
-          setComment(editPost.post)
-          setDateFrom(dayjs(editPost.date_from))
-          setDateTo(dayjs(editPost.date_to))
-          setTimeFrom(dayjs(new Date().setHours(parseInt(editPost.time_from / 100), parseInt(editPost.time_from % 100), 0, 0)))
-          setTimeTo(dayjs(new Date().setHours(parseInt(editPost.time_to / 100), parseInt(editPost.time_to % 100), 0, 0)))
+          setInputCategory(editPost.category || "");
+          setInputSubCategory(editPost.sub_category || "");
+
+          setOptionSub(sub);
+          setComment(editPost.post || "");
+
+          setDateFrom(dayjs(editPost.date_from));
+          setDateTo(dayjs(editPost.date_to));
+
+          setTimeFrom(
+            dayjs(
+              new Date().setHours(
+                parseInt(editPost.time_from / 100),
+                parseInt(editPost.time_from % 100),
+                0,
+                0
+              )
+            )
+          );
+
+          setTimeTo(
+            dayjs(
+              new Date().setHours(
+                parseInt(editPost.time_to / 100),
+                parseInt(editPost.time_to % 100),
+                0,
+                0
+              )
+            )
+          );
+
           let editDays = editPost.days;
 
-if (typeof editDays === "string") {
-    try {
-        editDays = JSON.parse(editDays);
-    } catch (err) {
-        editDays = null;
-    }
-}
+          if (typeof editDays === "string") {
+            try {
+              editDays = JSON.parse(editDays);
+            } catch (err) {
+              editDays = null;
+            }
+          }
 
-setDays(
-    Array.isArray(editDays) && editDays.length === 7
-        ? editDays
-        : [-1, -1, -1, -1, -1, -1, -1]
-);
+          setDays(
+            Array.isArray(editDays) && editDays.length === 7
+              ? editDays
+              : [-1, -1, -1, -1, -1, -1, -1]
+          );
+        } else {
+          setValueCategory("");
+          setValueSubCategory("");
+          setInputCategory("");
+          setInputSubCategory("");
+          setOptionSub([]);
+          setComment("");
+          setDateFrom(tempDate);
+          setDateTo(tempDate);
+          setTimeFrom(tempDate);
+          setTimeTo(tempDate);
+          setDays([-1, -1, -1, -1, -1, -1, -1]);
         }
       } catch (err) {
-        console.log(err);
+        console.error("Error loading post form:", err);
       }
-    })();
+    };
+
+    loadData();
   }, [editPost]);
 
 
@@ -108,7 +152,7 @@ setDays(
 
   const handlePost = async () => {
     try {
-      if (!valueSubCategory) {
+      if (!(valueSubCategory || inputSubCategory || editPost?.sub_category)) {
         handleOpenAlert("error", "Please the subject you want to study");
         return;
       }
@@ -129,7 +173,7 @@ setDays(
         userId: editPost ? null : user.id || null,
         auther_name: userDetails.name || null,
         post: comment || '',
-        category: editPost ? editPost.category : inputCategory || null,
+        category: valueCategory || inputCategory || editPost?.category || null,
         sub_category: valueSubCategory || inputSubCategory || editPost?.sub_category || null,
         date_from: dFrom,
         date_to: dTo,
@@ -202,30 +246,37 @@ setDays(
             <DialogContent>
               <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                 <Autocomplete
-                  disabled={editPost !== null}
+                  disabled={Boolean(editPost)}
                   sx={{ width: '47%', m: 1 }}
-                  options={option ? option?.map((category) => category.name) : [""]}
+                  options={option?.map((category) => category.name) || []}
+                  value={valueCategory || null}
                   onChange={(event, newValue) => {
-                    setValueCategory(newValue);
+                    setValueCategory(newValue || "");
+                    setValueSubCategory("");
+                    setInputSubCategory("");
                   }}
                   onInputChange={(event, newInputValue) => {
                     setInputCategory(newInputValue);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label={editPost !== null ? editPost.category : "Category"} />
+                    <TextField {...params} label="Category" />
                   )}
                 />
                 <Autocomplete
                   sx={{ width: '47%', m: 1 }}
-                  options={valueCategory ? handleOptionSub() : optionSub}
+                  options={
+                    option.find((item) => item.name === valueCategory)
+                      ?.subjects?.map((subject) => subject.name) || optionSub
+                  }
+                  value={valueSubCategory || null}
                   onChange={(event, newValue) => {
-                    setValueSubCategory(newValue);
+                    setValueSubCategory(newValue || "");
                   }}
                   onInputChange={(event, newInputValue) => {
                     setInputSubCategory(newInputValue);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label={editPost ? editPost.sub_category : "Sub Category"} />
+                    <TextField {...params} label="Sub Category" />
                   )}
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -280,26 +331,26 @@ setDays(
                   </Box>
                 </LocalizationProvider>
                 <Box sx={{ width: '100%', m: 1 }}>
-  {week?.map((item, index) => {
-    return (
-      <Button
-        disabled={days[index] < 0}
-        key={index}
-        variant={days[index] !== 0 ? "contained" : "outlined"}
-        size="small"
-        sx={{ m: 0.4, width: '13%' }}
-        onClick={() => {
-          const temp = [...days];
-          temp[index] = 1 - temp[index];
+                  {week?.map((item, index) => {
+                    return (
+                      <Button
+                        disabled={days[index] < 0}
+                        key={index}
+                        variant={days[index] !== 0 ? "contained" : "outlined"}
+                        size="small"
+                        sx={{ m: 0.4, width: '13%' }}
+                        onClick={() => {
+                          const temp = [...days];
+                          temp[index] = 1 - temp[index];
 
-          setDays(temp);
-        }}
-      >
-        {item}
-      </Button>
-    );
-  })}
-</Box>
+                          setDays(temp);
+                        }}
+                      >
+                        {item}
+                      </Button>
+                    );
+                  })}
+                </Box>
                 <Box sx={{ width: '100%', m: 1 }}>
                   <TextField
                     value={comment}

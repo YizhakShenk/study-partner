@@ -33,23 +33,31 @@ export default function ExtendedPost({ post, setIsSendingEmail, setEmailSent, se
   const [openAnchorEl, setOpenAnchorEl] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleEdit = async () => {
-    try {
-      setOpenMore(false);
-      const postNature = await (
-        await axios.post(`${urlServer}/post/get-nature`, { id: post.id })
-      ).data;
-      if (!postNature) {
-        throw new Error("posts not dound");
-      }
-      setEditPost(postNature);
-      setOpenCreatePost(true);
-    }
-    catch (err) {
-      console.log(err);
-    }
-  }
+const handleEdit = async () => {
+  try {
+    setOpenMore(false);
 
+    const response = await axios.post(
+      `${urlServer}/post/get-nature`,
+      { id: post.id }
+    );
+
+    const postNature = response.data;
+
+    if (!postNature) {
+      throw new Error("Post not found");
+    }
+
+    console.log("POST TO EDIT:", postNature);
+
+    setEditPost(postNature);
+    setOpenCreatePost(true);
+
+  } catch (err) {
+    console.error("ERROR EDITING POST:", err.response?.data || err.message);
+  }
+};
+      
   const handleDeletePost = async () => {
     try {
       await axios.post(`${urlServer}/post/delete`, { id: post.id }, { withCredentials: true });
