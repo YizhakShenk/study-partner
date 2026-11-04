@@ -18,7 +18,13 @@ const week = [
 const reactToPost = async (req) => {
   try {
     const { the_applicant_id, postId, day } = req.body;
+    
     const post = await postRepo.getPost(postId);
+        console.log("POST ID:", postId);
+console.log("POST USER_ID:", post?.user_id);
+console.log("POST USERID:", post?.userId);
+console.log("POST DATA:", post?.dataValues || post);
+
     if (!post) {
       throw new Error("post not found");
     }
@@ -28,13 +34,21 @@ const reactToPost = async (req) => {
     if (days[day] === 0) {
       throw new Error("The day already taken or not able to study");
     }
-    const user = await userRepo.getOneUser(null, post.user_id || null);
-    if (!user) {
-      throw new Error("user not found");
-    }
-    if (user.message) {
-      throw new Error("user not found");
-    }
+    const ownerId = post?.user_id ?? post?.userId;
+
+console.log("OWNER ID:", ownerId);
+
+const user = await userRepo.getOneUser(null, ownerId);
+
+if (!user) throw new Error("user not found");
+if (user.message) throw new Error("user not found");
+    // const user = await userRepo.getOneUser(null, post.user_id || null);
+    // if (!user) {
+    //   throw new Error("user not found");
+    // }
+    // if (user.message) {
+    //   throw new Error("user not found");
+    // }
     const title = "somone wants to practice with you";
     const message = `someone react to your post request to practice ${post.sub_category} on  ${week[day]}.`;
     const url = `${CLIENT_URL}/confirm-post?pid=${postId}&aid=${the_applicant_id}&day=${day}`;
@@ -79,6 +93,12 @@ const confirmPost = async (req) => {
       throw new Error("day not valid.");
     }
     const post = await postRepo.getPost(postId);
+    console.log("POST ID:", postId);
+console.log("POST USER_ID:", post?.user_id);
+console.log("POST USERID:", post?.userId);
+console.log("POST DATA:", post?.dataValues || post);
+
+
     if (!post) {
       throw new Error("post not found.");
     }
@@ -129,6 +149,11 @@ const denyPost = async (req) => {
       throw new Error("error with request details.");
     }
     const post = await postRepo.getPost(postId);
+        console.log("POST ID:", postId);
+console.log("POST USER_ID:", post?.user_id);
+console.log("POST USERID:", post?.userId);
+console.log("POST DATA:", post?.dataValues || post);
+
     if (!post) {
       throw new Error("post not found.");
     }
