@@ -177,15 +177,21 @@ const handleEdit = async () => {
             View profile
           </Button>
           {user ? (
-            (String(user?.id) !== String(post.user_id ?? post.userId)) && <Button
-              onClick={handleBeMyPartner}
-              // disabled={day === -1}
-              disabled={false}
-              variant="outlined"
-              size="small"
-            >
-              be my partner
-            </Button>
+            (String(user?.id) !== String(post.user_id ?? post.userId)) && <Tooltip
+  title={day === -1 ? "Please select a study day first" : ""}
+  arrow
+>
+  <span>
+    <Button
+      onClick={handleBeMyPartner}
+      disabled={day === -1}
+      variant="outlined"
+      size="small"
+    >
+      be my partner
+    </Button>
+  </span>
+</Tooltip>
           ) : (
             <Tooltip
               title="Only logged-in users can use this feature."
