@@ -179,7 +179,8 @@ const handleEdit = async () => {
           {user ? (
             (String(user?.id) !== String(post.user_id ?? post.userId)) && <Button
               onClick={handleBeMyPartner}
-              disabled={day === -1}
+              // disabled={day === -1}
+              disabled={false}
               variant="outlined"
               size="small"
             >
